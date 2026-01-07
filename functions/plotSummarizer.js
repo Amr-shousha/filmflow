@@ -45,31 +45,96 @@
 // }
 // //the response currently from gemeni {"summary":"In the summer of 1983 in northern Italy, 17-year-old Elio Perlman meets Oliver, a charming American graduate student interning with Elio's professor father. Their initial polite tension evolves into a passionate, secret romance. They spend weeks bicycling, swimming, reading, and exploring their burgeoning feelings amidst the picturesque Italian landscape. Their intense bond deepens quickly, leading to a profound, bittersweet first love that profoundly impacts Elio. As Oliver's departure looms, they confront the beautiful impermanence of their summer affair and its lasting emotional imprint.","corrected_title":"Call Me by Your Name","omdb_id":"tt5726616"}
 
-import { GoogleGenAI } from "@google/genai";
+// import { GoogleGenAI } from "@google/genai";
 
+// export async function handler(event) {
+//   try {
+//     const ai = new GoogleGenAI({
+//       apiKey: process.env.GEMINI_API_KEY, // must be set in Netlify
+//     });
+
+//     const { prompt } = JSON.parse(event.body);
+
+//     // Call Gemini
+//     const response = await ai.models.generateContent({
+//       model: "gemini-2.5-flash",
+//       contents: `can you summarize with spoiling(not the one from IMDB) the movie/show ${prompt} in max 100 words,
+//                 and also provide two pieces of data in the response:
+//                 1) corrected version of the movie title
+//                 2) its ID on OMDB.
+//                 Respond ONLY with JSON, no extra text.`,
+//     });
+
+//     // Clean any ```json wrapper
+//     let cleanText = response.text.replace(/```json|```/g, "").trim();
+
+//     // Parse JSON safely
+//     let parsed = JSON.parse(cleanText);
+
+//     return {
+//       statusCode: 200,
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(parsed),
+//     };
+//   } catch (error) {
+//     console.error(error);
+//     return {
+//       statusCode: 500,
+//       body: JSON.stringify({ error: error.message }),
+//     };
+//   }
+// }
 export async function handler(event) {
   try {
-    const ai = new GoogleGenAI({
-      apiKey: process.env.GEMINI_API_KEY, // must be set in Netlify
-    });
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error("Missing GEMINI_API_KEY");
+    }
 
-    const { prompt } = JSON.parse(event.body);
+    const { prompt } = JSON.parse(event.body || "{}");
+    if (!prompt) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "prompt is required" }),
+      };
+    }
 
-    // Call Gemini
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: `can you summarize with spoiling(not the one from IMDB) the movie/show ${prompt} in max 100 words,
-                and also provide two pieces of data in the response:
-                1) corrected version of the movie title
-                2) its ID on OMDB.
-                Respond ONLY with JSON, no extra text.`,
-    });
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Summarize with spoilers (not IMDb) the movie/show "${prompt}" in max 100 words.
+Return ONLY valid JSON with:
+{
+  "summary": "",
+  "corrected_title": "",
+  "omdb_id": ""
+}`,
+                },
+              ],
+            },
+          ],
+        }),
+      }
+    );
 
-    // Clean any ```json wrapper
-    let cleanText = response.text.replace(/```json|```/g, "").trim();
+    const data = await response.json();
 
-    // Parse JSON safely
-    let parsed = JSON.parse(cleanText);
+    let text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text) {
+      throw new Error("Empty Gemini response");
+    }
+
+    // Remove ```json wrappers
+    text = text.replace(/```json|```/g, "").trim();
+
+    const parsed = JSON.parse(text);
 
     return {
       statusCode: 200,
@@ -77,10 +142,13 @@ export async function handler(event) {
       body: JSON.stringify(parsed),
     };
   } catch (error) {
-    console.error(error);
+    console.error("FUNCTION ERROR:", error);
+
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
+      body: JSON.stringify({
+        error: error.message,
+      }),
     };
   }
 }
