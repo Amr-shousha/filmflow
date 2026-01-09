@@ -58,9 +58,9 @@ export default function Options() {
     },
     {
       id: "Scriptsd",
-      title: "Reviews",
-      description: "latest movie reviews ",
-      path: "https://www.scriptslug.com/",
+      title: " Critique",
+      description: "Profissional AI Critiques ",
+      path: "/Critique",
       icon: iconReviews,
     },
   ];

@@ -3,97 +3,110 @@ import ScriptWizard from "../components/ScriptWizard";
 
 function Senario() {
   const [results, setResults] = useState("");
-  const [loading, setLoading] = useState(false); // Loading state
-  const [error, setError] = useState(""); // Error handling
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Helper to fix titles (converts &#39; to ' etc.)
+  const decodeHtml = (html) => {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+  };
 
   useEffect(() => {
-    async function handleSubmit() {
+    async function fetchMasterclasses() {
       setLoading(true);
-      setError(null);
-      const query = "nterviews/Masterclasses script writing ";
+      setError("");
       try {
         const response = await fetch("/.netlify/functions/interview", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query: query, resultsnum: 6 }),
+          body: JSON.stringify({
+            query: "interviews/Masterclasses script writing",
+            resultsnum: 6,
+          }),
         });
-
-        if (!response.ok) {
-          // Try to get error message from server, fallback to status
-          const errorMessage =
-            data.error?.message || `Error: ${response.status}`;
-          throw new Error(errorMessage);
-        }
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
         const data = await response.json();
-        console.log(JSON.stringify(data));
         setResults(data);
       } catch (err) {
-        console.error(err);
-        setError(`Failed to fetch news. Please try again. ${err}`);
+        setError(`Failed to fetch resources: ${err.message}`);
       } finally {
         setLoading(false);
       }
     }
-    handleSubmit();
+    fetchMasterclasses();
   }, []);
 
   return (
     <div className="main-container">
-      <h1>Screenplay</h1>
+      <div className="text-center mb-5">
+        <h1 className="display-4 fw-bold">Screenplay Architect</h1>
+        <p className="">Draft your story beats and learn from the masters.</p>
+      </div>
 
-      <ScriptWizard />
+      <section className="mb-5">
+        <ScriptWizard />
+      </section>
 
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <hr className="my-5 border-secondary opacity-25" />
 
-      <h3> youtube </h3>
-      {results && results.items && (
-        <div className="news-result ">
-          <div className="d-flex  flex-wrap gap-2 justify-content-center">
-            {results.items.map((video) => (
-              <a
-                className="article-link"
-                href={`https://www.youtube.com/watch?v=${video.id.videoId}`}
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                <div
-                  key={video.id.videoId}
-                  className="video-item  hover-card raduis"
-                >
-                  {/* 1. Thumbnail Image */}
-                  <div className="video-img-container">
-                    <img
-                      src={video.snippet.thumbnails.medium.url}
-                      alt={video.snippet.title}
-                      className="video-img"
-                    />
-                  </div>
+      {!loading && <h2 className="mb-4">Writing Masterclasses</h2>}
 
-                  <div className="video-content-details ">
-                    <p className="video-title">{video.snippet.title}</p>
-
-                    {/* 3. Link to YouTube using the Video ID */}
-
-                    {/* 4. Description */}
-                    <p>{video.snippet.description.substring(0, 100)}...</p>
-                    <div className="d-flex justify-content-between">
-                      <p>{video.snippet.channelTitle}</p>
-
-                      <p>
-                        {new Date(
-                          video.snippet.publishedAt
-                        ).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                  {/* 2. Video Title */}
-                </div>
-              </a>
-            ))}
-          </div>
+      {loading && (
+        <div className="text-center my-5">
+          <div className="spinner-border text-accent"></div>
         </div>
       )}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {/* Using the same container class as the News page */}
+      <div className="articles-container">
+        {results &&
+          results.items &&
+          results.items.map((video) => (
+            <a
+              className="article-link"
+              href={`https://www.youtube.com/watch?v=${video.id.videoId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              key={video.id.videoId}
+            >
+              {/* Exactly the same structure as your News cards */}
+              <div className="raduis article-card hover-card d-flex flex-column h-100">
+                <div className="article-image-container">
+                  <img
+                    className="article-img"
+                    src={
+                      video.snippet.thumbnails.high
+                        ? video.snippet.thumbnails.high.url
+                        : video.snippet.thumbnails.medium.url
+                    }
+                    alt={video.snippet.title}
+                  />
+                </div>
+
+                <div className="article-details d-flex flex-column justify-content-between flex-grow-1 p-3">
+                  <h4 className="title">{decodeHtml(video.snippet.title)}</h4>
+
+                  {/* Simplified description similar to News 'trail' */}
+                  <p className="trail">
+                    {video.snippet.description.substring(0, 100)}...
+                  </p>
+
+                  <div className="d-flex justify-content-between mt-auto">
+                    <p className="mb-0 small fw-bold text-accent">
+                      {video.snippet.channelTitle}
+                    </p>
+                    <p className="mb-0 small ">
+                      {new Date(video.snippet.publishedAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </a>
+          ))}
+      </div>
     </div>
   );
 }

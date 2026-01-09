@@ -10,22 +10,15 @@ function News() {
     const fetchNews = async function () {
       setLoading(true);
       setError("");
-      setNews([]);
       try {
         const response = await fetch("/.netlify/functions/newsG", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
         });
-
-        if (!response.ok) {
-          throw new Error(`Server error: ${response.status}`);
-        }
-
+        if (!response.ok) throw new Error(`Server error: ${response.status}`);
         const data = await response.json();
-
         setNews(data);
       } catch (err) {
-        console.error(err);
         setError(`Failed to fetch news: ${err.message}`);
       } finally {
         setLoading(false);
@@ -33,7 +26,8 @@ function News() {
     };
     fetchNews();
   }, []);
-  function truncateWords(text, wordLimit = 20) {
+
+  function truncateWords(text, wordLimit = 15) {
     if (!text) return "";
     const words = text.split(" ");
     return words.length > wordLimit
@@ -42,25 +36,22 @@ function News() {
   }
 
   return (
-    <div className="main-container d-flex flex-wrap">
-      {/* <form onSubmit={handleSubmit}>
-        <div className="input-container">
-          <input
-            type="text"
-            value={input}
-            placeholder="Enter movie or show"
-            onChange={(e) => setInput(e.target.value)}
-          />
-          <button type="submit">
-            <img src={iconSubmit} alt="Submit" />
-          </button>
+    <div className="main-container">
+      {" "}
+      {/* Removed d-flex flex-wrap from here */}
+      {!loading && (
+        <h2 className="text-center mb-5">Latest Entertainment News</h2>
+      )}
+      {loading && (
+        <div className="text-center my-5">
+          <div className="spinner-border text-accent"></div>
         </div>
-      </form> */}
-
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {!loading && <h2>latest entertainment news </h2>}
-
+      )}
+      {error && (
+        <p className="text-center" style={{ color: "red" }}>
+          {error}
+        </p>
+      )}
       <div className="articles-container">
         {news &&
           news.map((article) => (
@@ -69,11 +60,9 @@ function News() {
               href={article.url}
               target="_blank"
               rel="noopener noreferrer"
+              key={article.url} // Use URL or ID
             >
-              <div
-                className="raduis article-card hover-card d-flex flex-column  "
-                key={article.id}
-              >
+              <div className="article-card hover-card raduis">
                 <div className="article-image-container">
                   <img
                     className="article-img"
@@ -82,16 +71,18 @@ function News() {
                   />
                 </div>
 
-                <div className="details-hover article-details d-flex flex-column  justify-content-between ">
+                <div className="article-details">
                   <h4 className="title">{article.title}</h4>
-
                   <p className="trail">{truncateWords(article.description)}</p>
-                  <div className="d-flex justify-content-between">
-                    <p>{article.source}</p>{" "}
-                    <p>{new Date(article.publishedAt).toLocaleDateString()}</p>
+
+                  <div className="mt-auto d-flex justify-content-between small opacity-75">
+                    <span>{article.source}</span>
+                    <span>
+                      {new Date(article.publishedAt).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
-              </div>{" "}
+              </div>
             </a>
           ))}
       </div>

@@ -8,13 +8,18 @@ import Search from "../pages/serchPage";
 import Plot from "../pages/PlotSummarizerPage";
 import Interviews from "../pages/Interviews";
 import Senario from "../pages/Senario";
+import Critique from "../pages/Critique";
 export default function App() {
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark  mb-5 fixed-top">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
-            FilmFlow
+            <img
+              src="/src/assets/imgs/icons/brand-1-1.png"
+              style={{ width: "130px" }}
+              alt=""
+            />
           </Link>
 
           <button
@@ -79,6 +84,7 @@ export default function App() {
           <Route path="/plot" element={<Plot />} />
           <Route path="/interviews" element={<Interviews />} />
           <Route path="/screenplay" element={<Senario />} />
+          <Route path="/Critique" element={<Critique />} />
         </Routes>
       </div>
     </div>

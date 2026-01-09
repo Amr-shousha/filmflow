@@ -1,3 +1,4 @@
+//src/pages/Interviews.jsx
 import React, { useState } from "react";
 import iconSubmit from "../assets/imgs/icons/submit.png";
 
@@ -40,69 +41,70 @@ function Interviews() {
       setLoading(false);
     }
   }
-
   return (
     <div className="main-container">
-      <h1>interviews</h1>
+      <h1 className="display-5 mb-4">Interviews</h1>
       <form onSubmit={handleSubmit}>
         <div className="input-container">
           <input
             type="text"
+            className="form-control"
             value={input}
-            placeholder="Enter movie or show"
+            placeholder="Search movie or show interviews..."
             onChange={(e) => setInput(e.target.value)}
           />
           <button className="submit-btn" type="submit">
-            <img src={iconSubmit} alt="Submit" />
+            <img src={iconSubmit} alt="Submit" width="24" />
           </button>
         </div>
       </form>
 
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {loading && (
+        <div className="text-center my-5">
+          <div className="spinner-border text-primary" role="status"></div>
+        </div>
+      )}
 
-      {/* Check if results exists and has the 'items' array from YouTube */}
-      {results && results.items && (
-        <div className="news-result ">
-          <div className="d-flex  flex-wrap gap-2 justify-content-center">
-            {results.items.map((video) => (
+      {results?.items && (
+        <div className="row g-4">
+          {results.items.map((video) => (
+            <div className="col-12 col-md-6 col-lg-4" key={video.id.videoId}>
               <a
-                className="article-link"
+                className="text-decoration-none"
                 href={`https://www.youtube.com/watch?v=${video.id.videoId}`}
                 target="_blank"
-                rel="noreferrer noopener"
+                rel="noreferrer"
               >
-                <div key={video.id.videoId} className="video-item  hover-card">
-                  {/* 1. Thumbnail Image */}
+                <div className="hover-card d-flex flex-column h-100">
                   <div className="video-img-container">
                     <img
                       src={video.snippet.thumbnails.medium.url}
-                      alt={video.snippet.title}
                       className="video-img"
+                      alt=""
                     />
                   </div>
-                  <div className="video-content-details  details-hover">
-                    <p className="video-title">{video.snippet.title}</p>
-
-                    {/* 3. Link to YouTube using the Video ID */}
-
-                    {/* 4. Description */}
-                    <p>{video.snippet.description.substring(0, 100)}...</p>
-                    <div className="d-flex justify-content-between">
-                      <p>{video.snippet.channelTitle}</p>
-
-                      <p>
+                  <div className="p-3 d-flex flex-column flex-grow-1">
+                    <h5 className="video-title text-white">
+                      {video.snippet.title}
+                    </h5>
+                    <p className="small text-muted mb-3">
+                      {video.snippet.description.substring(0, 80)}...
+                    </p>
+                    <div className="mt-auto d-flex justify-content-between align-items-center">
+                      <span className="badge bg-secondary">
+                        {video.snippet.channelTitle}
+                      </span>
+                      <small className="text-muted">
                         {new Date(
                           video.snippet.publishedAt
                         ).toLocaleDateString()}
-                      </p>
+                      </small>
                     </div>
                   </div>
-                  {/* 2. Video Title */}
                 </div>
               </a>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       )}
     </div>

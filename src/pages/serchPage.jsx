@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar.jsx";
 import notFoundImg from "../assets/imgs/missing-image.jpg";
-import imdbLogo from "../assets/imgs/icons/imdb.png";
 import MovieIDSearch from "../components/MovieIDSearch.jsx";
 
 function Search() {
@@ -10,7 +9,10 @@ function Search() {
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState(null);
   const [searchIDResult, setSearchIDResult] = useState(null);
+
+  // We can keep this for logic, but the CSS .movie-card:hover will handle the visual show/hide
   const [hoveredMovieId, setHoveredMovieId] = useState(null);
+
   useEffect(() => {
     if (!searchInput) return;
     setLoading(true);
@@ -38,6 +40,7 @@ function Search() {
   function cancelSearch() {
     setSearchIDResult(null);
   }
+
   const movieSearchByID = async (e, ID) => {
     e.preventDefault();
     setLoading(true);
@@ -59,57 +62,74 @@ function Search() {
 
   return (
     <div className="main-container">
-      <h2>the biggest movies database </h2>
+      <h2 className="mb-4 text-center">The Biggest Movies Database</h2>
 
       <SearchBar setSearchInput={setSearchInput} searchInput={searchInput} />
+
       {loading ? (
-        <h2> loading... </h2>
+        <div className="text-center mt-5">
+          <div className="spinner-grow text-accent" role="status"></div>
+          <h2 className="mt-3">Loading...</h2>
+        </div>
       ) : (
         <>
-          {/* {searchResult?.imdbID ||
-            (searchIDResult && <button onClick={cancelSearch}>X</button>)} */}
+          {error && (
+            <p className="text-center mt-3" style={{ color: "red" }}>
+              {error}
+            </p>
+          )}
 
-          {/* {loading && <p>Loading...</p>} */}
-          {/* {error && <p style={{ color: "red" }}>{error}</p>} */}
-
-          <div className="d-flex  flex-wrap gap-4 justify-content-center mt-5">
+          {/* Using Bootstrap Grid: 2 columns on mobile, 4 on desktop */}
+          <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 mt-5">
             {searchResult &&
               !searchIDResult &&
               searchResult.Search?.map((movie) => (
-                <div
-                  className="movie-card hover-card"
-                  key={movie.imdbID}
-                  onClick={(e) => movieSearchByID(e, movie.imdbID)}
-                  onMouseEnter={() => setHoveredMovieId(movie.imdbID)}
-                  onMouseLeave={() => setHoveredMovieId(null)}
-                >
-                  <img
-                    src={movie.Poster !== "N/A" ? movie.Poster : notFoundImg}
-                    alt=""
-                    onError={(e) => (e.target.src = notFoundImg)}
-                    className="movie-image"
-                  />
-                  {hoveredMovieId === movie.imdbID && (
-                    <div className=" movie-overlay">
-                      <h3>{movie.Title}</h3>
-                      <p>{movie.Year}</p>
-                      <p>{movie.Type}</p>{" "}
+                <div className="col" key={movie.imdbID}>
+                  <div
+                    className="movie-card hover-card h-100"
+                    onClick={(e) => movieSearchByID(e, movie.imdbID)}
+                    onMouseEnter={() => setHoveredMovieId(movie.imdbID)}
+                    onMouseLeave={() => setHoveredMovieId(null)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <div className="position-relative h-100">
+                      <img
+                        src={
+                          movie.Poster !== "N/A" ? movie.Poster : notFoundImg
+                        }
+                        alt={movie.Title}
+                        onError={(e) => (e.target.src = notFoundImg)}
+                        className="img-fluid w-100 h-100 movie-image"
+                        style={{ objectFit: "cover" }}
+                      />
+
+                      {/* The Overlay: Data is back and controlled by the movie-card hover */}
+                      <div className="movie-overlay p-3">
+                        <h6 className="fw-bold mb-1">{movie.Title}</h6>
+                        <p className="small mb-1">{movie.Year}</p>
+                        <span className="badge bg-light text-dark small">
+                          {movie.Type}
+                        </span>
+                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               ))}
           </div>
+
           {searchIDResult && (
-            <>
-              <button onClick={cancelSearch} className="btn btn-close ">
-                <span> Back </span>{" "}
+            <div className="mt-4 p-4 rounded bg-dark border border-secondary shadow-lg">
+              <button
+                onClick={cancelSearch}
+                className="btn btn-outline-light mb-3"
+              >
+                <span> ← Back to Results </span>
               </button>
               <MovieIDSearch IDResult={searchIDResult} />
-            </>
+            </div>
           )}
         </>
       )}
-      {/* {JSON.stringify(searchIDResult)} */}
     </div>
   );
 }
