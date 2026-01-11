@@ -16,7 +16,7 @@ export default function App() {
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
             <img
-              src="/src/assets/imgs/icons/brand-1-1.png"
+              src="../assets/imgs/icons/brand-1-1.png "
               style={{ width: "130px" }}
               alt=""
             />
