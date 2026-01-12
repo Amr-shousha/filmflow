@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, NavLink, Routes, Route, Link } from "react-router-dom";
 
 import "../App.css";
 import Options from "./Options";
@@ -35,21 +35,21 @@ export default function App() {
           <div className="collapse navbar-collapse " id="navbarNav">
             <ul className="navbar-nav  ">
               <li className="nav-item pt-2 ">
-                <Link className="nav-link" to="/news">
+                <NavLink className="nav-link" to="/news">
                   News
-                </Link>
+                </NavLink>
               </li>
 
               <li className="nav-item pt-2 ">
-                <Link className="nav-link" to="/search">
+                <NavLink className="nav-link" to="/search">
                   Search
-                </Link>
+                </NavLink>
               </li>
 
               <li className="nav-item pt-2">
-                <Link className="nav-link" to="/plot">
+                <NavLink className="nav-link" to="/plot">
                   Plot Summary
-                </Link>
+                </NavLink>
               </li>
 
               <li className="nav-item pt-2">
@@ -64,9 +64,19 @@ export default function App() {
               </li>
 
               <li className="nav-item pt-2">
-                <Link className="nav-link" to="/screenplay">
+                <NavLink className="nav-link" to="/screenplay">
                   Screenplay
-                </Link>
+                </NavLink>
+              </li>
+              <li className="nav-item pt-2">
+                <NavLink className="nav-link" to="/critique">
+                  Critique
+                </NavLink>
+              </li>
+              <li className="nav-item pt-2">
+                <NavLink className="nav-link" to="/interviews">
+                  Interviews
+                </NavLink>
               </li>
             </ul>
           </div>
@@ -82,7 +92,7 @@ export default function App() {
           <Route path="/plot" element={<Plot />} />
           <Route path="/interviews" element={<Interviews />} />
           <Route path="/screenplay" element={<Senario />} />
-          <Route path="/Critique" element={<Critique />} />
+          <Route path="/critique" element={<Critique />} />
         </Routes>
       </div>
     </div>

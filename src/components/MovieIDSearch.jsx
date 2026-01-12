@@ -15,7 +15,7 @@ export default function MovieIDResult({ IDResult, amount = "max" }) {
               src={IDResult.Poster !== "N/A" ? IDResult.Poster : notFoundImg}
               alt={IDResult.Title}
               className="img-fluid rounded shadow"
-              style={{ maxWidth: "300px" }}
+              style={{}}
               onError={(e) => (e.target.src = notFoundImg)}
             />
           </div>

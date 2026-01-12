@@ -57,7 +57,7 @@ function CriticsWriter() {
   }
   return (
     <div className="main-container">
-      <h1>Professional AI Critics</h1>
+      <h1>Professional AI critique</h1>
       <form onSubmit={handleSubmit}>
         <div className="input-container">
           <input

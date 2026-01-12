@@ -53,9 +53,6 @@ function Interviews() {
             placeholder="Search movie or show interviews..."
             onChange={(e) => setInput(e.target.value)}
           />
-          <button className="submit-btn" type="submit">
-            <img src={iconSubmit} alt="Submit" width="24" />
-          </button>
         </div>
       </form>
 
