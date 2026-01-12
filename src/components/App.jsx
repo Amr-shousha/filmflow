@@ -9,17 +9,15 @@ import Plot from "../pages/PlotSummarizerPage";
 import Interviews from "../pages/Interviews";
 import Senario from "../pages/Senario";
 import Critique from "../pages/Critique";
+import brandLogo from "../assets/imgs/icons/brand-1-1.png";
+
 export default function App() {
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark  mb-5 fixed-top">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
-            <img
-              src="../assets/imgs/icons/brand-1-1.png "
-              style={{ width: "130px" }}
-              alt=""
-            />
+            <img src={brandLogo} style={{ width: "130px" }} alt="" />
           </Link>
 
           <button
