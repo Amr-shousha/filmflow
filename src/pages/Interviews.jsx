@@ -1,12 +1,14 @@
 //src/pages/Interviews.jsx
 import React, { useState } from "react";
 import iconSubmit from "../assets/imgs/icons/submit.png";
+import { useSplitTextAnimation } from "../components/UseSplitTextAnimation";
 
 function Interviews() {
   const [input, setInput] = useState("");
   const [results, setResults] = useState(""); // Store HF response
   const [loading, setLoading] = useState(false); // Loading state
   const [error, setError] = useState(""); // Error handling
+  const { textRef } = useSplitTextAnimation();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -43,7 +45,9 @@ function Interviews() {
   }
   return (
     <div className="main-container">
-      <h1 className="display-5 mb-4">Interviews</h1>
+      <h1 className="display-5 mb-4" ref={textRef}>
+        Interviews
+      </h1>
       <form onSubmit={handleSubmit}>
         <div className="input-container">
           <input
@@ -93,7 +97,7 @@ function Interviews() {
                       </span>
                       <small className="text-muted">
                         {new Date(
-                          video.snippet.publishedAt
+                          video.snippet.publishedAt,
                         ).toLocaleDateString()}
                       </small>
                     </div>

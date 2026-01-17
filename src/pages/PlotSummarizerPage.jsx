@@ -1,12 +1,16 @@
 import iconSubmit from "../assets/imgs/icons/submit.png";
 import React, { useState } from "react";
 import MovieIDSearch from "../components/MovieIDSearch";
+import { useSplitTextAnimation } from "../components/UseSplitTextAnimation";
+
 function PlotSummarizer() {
   const [input, setInput] = useState("");
   const [summary, setSummary] = useState(""); // Store HF response
   const [loading, setLoading] = useState(false); // Loading state
   const [error, setError] = useState(""); // Error handling
   const [searchIDResult, setSearchIDResult] = useState(null);
+  const { textRef } = useSplitTextAnimation();
+
   const movieSearchByID = async (ID) => {
     setLoading(true);
     setError("");
@@ -57,7 +61,9 @@ function PlotSummarizer() {
 
   return (
     <div className="">
-      <h1>plot summary</h1>
+      <h1 className="display-5" ref={textRef}>
+        plot summary
+      </h1>
       <form onSubmit={handleSubmit}>
         <div className="input-container">
           <input

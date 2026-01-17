@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import ScriptWizard from "../components/ScriptWizard";
+import { useSplitTextAnimation } from "../components/UseSplitTextAnimation";
 
 function Senario() {
   const [results, setResults] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { textRef } = useSplitTextAnimation();
 
   // Helper to fix titles (converts &#39; to ' etc.)
   const decodeHtml = (html) => {
@@ -41,7 +43,9 @@ function Senario() {
   return (
     <div className="main-container">
       <div className="text-center mb-5">
-        <h1 className="display-4 fw-bold">Screenplay Architect</h1>
+        <h1 className="display-5 " ref={textRef}>
+          Screenplay Architect
+        </h1>
         <p className="">Draft your story beats and learn from the masters.</p>
       </div>
 

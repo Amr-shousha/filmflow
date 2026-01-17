@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BrowserRouter, NavLink, Routes, Route, Link } from "react-router-dom";
 
 import "../App.css";
+import "../Gsap.css";
 import Options from "./Options";
 import News from "../pages/NewsPage";
 import Search from "../pages/serchPage";

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import iconSubmit from "../assets/imgs/icons/submit.png";
+import { useSplitTextAnimation } from "../components/UseSplitTextAnimation";
 
 function Reviews() {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { textRef } = useSplitTextAnimation();
 
   useEffect(() => {
     const fetchNews = async function () {
@@ -59,7 +61,11 @@ function Reviews() {
 
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
-      {!loading && <h2>latest entertainment news </h2>}
+      {!loading && (
+        <h1 className="display-5" ref={textRef}>
+          latest entertainment news{" "}
+        </h1>
+      )}
 
       <div className="articles-container">
         {news &&

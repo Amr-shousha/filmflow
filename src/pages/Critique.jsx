@@ -1,6 +1,8 @@
 //src/pages/CriticsWriter.jsx
 import iconSubmit from "../assets/imgs/icons/submit.png";
 import React, { useState } from "react";
+import { useSplitTextAnimation } from "../components/UseSplitTextAnimation";
+
 import MovieIDSearch from "../components/MovieIDSearch";
 function CriticsWriter() {
   const [input, setInput] = useState("");
@@ -8,6 +10,8 @@ function CriticsWriter() {
   const [loading, setLoading] = useState(false); // Loading state
   const [error, setError] = useState(""); // Error handling
   const [searchIDResult, setSearchIDResult] = useState(null);
+  const { textRef } = useSplitTextAnimation();
+
   const movieSearchByID = async (ID) => {
     setLoading(true);
     setError("");
@@ -57,7 +61,11 @@ function CriticsWriter() {
   }
   return (
     <div className="main-container">
-      <h1>Professional AI critique</h1>
+      {!loading && (
+        <h1 className="display-5" ref={textRef}>
+          Professional AI critique
+        </h1>
+      )}
       <form onSubmit={handleSubmit}>
         <div className="input-container">
           <input

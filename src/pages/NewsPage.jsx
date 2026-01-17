@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import iconSubmit from "../assets/imgs/icons/submit.png";
+import { useSplitTextAnimation } from "../components/UseSplitTextAnimation";
 
 function News() {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const { textRef } = useSplitTextAnimation();
 
   useEffect(() => {
     const fetchNews = async function () {
@@ -39,9 +42,11 @@ function News() {
     <div className="main-container">
       {" "}
       {/* Removed d-flex flex-wrap from here */}
-      {!loading && (
-        <h2 className="text-center mb-5">Latest Entertainment News</h2>
-      )}
+      {
+        <h1 className="display-5" ref={textRef}>
+          Latest Entertainment News
+        </h1>
+      }
       {loading && (
         <div className="text-center my-5">
           <div className="spinner-border text-accent"></div>

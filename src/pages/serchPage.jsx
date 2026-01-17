@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar.jsx";
 import notFoundImg from "../assets/imgs/missing-image.jpg";
 import MovieIDSearch from "../components/MovieIDSearch.jsx";
+import { useSplitTextAnimation } from "../components/UseSplitTextAnimation";
 
 function Search() {
   const [loading, setLoading] = useState(false);
@@ -9,6 +10,7 @@ function Search() {
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState(null);
   const [searchIDResult, setSearchIDResult] = useState(null);
+  const { textRef } = useSplitTextAnimation();
 
   // We can keep this for logic, but the CSS .movie-card:hover will handle the visual show/hide
   const [hoveredMovieId, setHoveredMovieId] = useState(null);
@@ -62,7 +64,9 @@ function Search() {
 
   return (
     <div className="main-container">
-      <h2 className="mb-4 text-center">The Biggest Movies Database</h2>
+      <h1 className="mb-4 text-center display-5" ref={textRef}>
+        The Biggest Movies Database
+      </h1>
 
       <SearchBar setSearchInput={setSearchInput} searchInput={searchInput} />
 
