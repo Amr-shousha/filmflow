@@ -1,7 +1,7 @@
 //src/pages/Interviews.jsx
 import React, { useState } from "react";
-import iconSubmit from "../assets/imgs/icons/submit.png";
 import { useSplitTextAnimation } from "../components/UseSplitTextAnimation";
+import SearchBar from "../components/SearchBar";
 
 function Interviews() {
   const [input, setInput] = useState("");
@@ -44,21 +44,16 @@ function Interviews() {
     }
   }
   return (
-    <div className="main-container">
-      <h1 className="display-5 mb-4" ref={textRef}>
+    <div className="container">
+      <h1 className="display-5 " ref={textRef}>
         Interviews
       </h1>
-      <form onSubmit={handleSubmit}>
-        <div className="input-container">
-          <input
-            type="text"
-            className="form-control"
-            value={input}
-            placeholder="Search movie or show interviews..."
-            onChange={(e) => setInput(e.target.value)}
-          />
-        </div>
-      </form>
+      <SearchBar
+        setSearchInput={setInput}
+        searchInput={input}
+        autoSubmit={false}
+        handleSubmit={handleSubmit}
+      />
 
       {loading && (
         <div className="text-center my-5">

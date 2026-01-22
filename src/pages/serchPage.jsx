@@ -63,8 +63,8 @@ function Search() {
   };
 
   return (
-    <div className="main-container">
-      <h1 className="mb-4 text-center display-5" ref={textRef}>
+    <div className="container">
+      <h1 className="text-center display-5 " ref={textRef}>
         The Biggest Movies Database
       </h1>
 

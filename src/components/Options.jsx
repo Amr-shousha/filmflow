@@ -57,10 +57,18 @@ export default function Options() {
       icon: iconScenario,
     },
     {
-      id: "Scriptsd",
-      title: " Critique",
+      id: "critique",
+      title: " critique",
       description: "Profissional AI Critiques ",
       path: "/Critique",
+      icon: iconReviews,
+    },
+    {
+      id: "main",
+      title: "Mood Match",
+      description:
+        "Discover cinema that resonates with your era, style, and emotion ",
+      path: "/mood-match",
       icon: iconReviews,
     },
   ];
@@ -71,18 +79,48 @@ export default function Options() {
   };
 
   return (
-    <div className="link-cards-container">
-      {cards.map((card) => (
-        <div
-          className="link-card"
-          key={card.id}
-          onClick={() => handleClick(card.path)}
-        >
-          <img src={card.icon} alt="" />
-          <h3>{card.title}</h3>
-          <p>{card.description} </p>
+    <>
+      <div className="row">
+        <div className="col-12">
+          {cards
+            .filter((card) => card.id == "main")
+            .map((card) => (
+              <div
+                className="link-card main-btn"
+                key={card.id}
+                onClick={() => handleClick(card.path)}
+              >
+                <img src={card.icon} alt="" />
+                <h3>{card.title}</h3>
+                <p>{card.description} </p>
+              </div>
+            ))}
         </div>
-      ))}
-    </div>
+      </div>
+      <div className="link-cards-container ">
+        {cards
+          .filter((card) => card.id !== "main")
+          .map((card) => (
+            <div
+              className="link-card"
+              key={card.id}
+              onClick={() => handleClick(card.path)}
+            >
+              <img src={card.icon} alt="" />
+              <h3>{card.title}</h3>
+              <p>{card.description} </p>
+            </div>
+          ))}
+      </div>{" "}
+    </>
   );
 }
+//  <div
+//           className="link-card"
+//           key={card.id}
+//           onClick={() => handleClick(card.path)}
+//         >
+//           <img src={card.icon} alt="" />
+//           <h3>{card.title}</h3>
+//           <p>{card.description} </p>
+//         </div>

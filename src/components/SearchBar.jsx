@@ -1,12 +1,33 @@
-export default function SearchBar({ setSearchInput, searchInput }) {
+export default function SearchBar({
+  setSearchInput,
+  searchInput,
+  autoSubmit = true,
+  handleSubmit,
+}) {
   return (
     <div className="input-container">
-      <input
-        type="text"
-        value={searchInput}
-        placeholder="Enter movie or show"
-        onChange={(e) => setSearchInput(e.target.value)}
-      />
+      {!autoSubmit ? (
+        <input
+          type="text"
+          value={searchInput}
+          placeholder="Enter movie or show"
+          onChange={(e) => setSearchInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSubmit(e);
+            }
+          }}
+        />
+      ) : (
+        <input
+          type="text"
+          value={searchInput}
+          placeholder="Enter movie or show"
+          onChange={(e) => {
+            setSearchInput(e.target.value);
+          }}
+        />
+      )}
     </div>
   );
 }

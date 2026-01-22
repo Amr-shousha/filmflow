@@ -2,7 +2,7 @@ import iconSubmit from "../assets/imgs/icons/submit.png";
 import React, { useState } from "react";
 import MovieIDSearch from "../components/MovieIDSearch";
 import { useSplitTextAnimation } from "../components/UseSplitTextAnimation";
-
+import SearchBar from "../components/SearchBar";
 function PlotSummarizer() {
   const [input, setInput] = useState("");
   const [summary, setSummary] = useState(""); // Store HF response
@@ -60,25 +60,16 @@ function PlotSummarizer() {
   }
 
   return (
-    <div className="">
+    <div className="container">
       <h1 className="display-5" ref={textRef}>
         plot summary
       </h1>
-      <form onSubmit={handleSubmit}>
-        <div className="input-container">
-          <input
-            type="text"
-            value={input}
-            placeholder="Enter movie or show"
-            onChange={(e) => {
-              setInput(e.target.value);
-            }}
-          />
-          {/* <button className="submit-btn" type="submit">
-            <img src={iconSubmit} alt="Submit" />
-          </button> */}
-        </div>
-      </form>
+      <SearchBar
+        setSearchInput={setInput}
+        searchInput={input}
+        autoSubmit={false}
+        handleSubmit={handleSubmit}
+      />
 
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}

@@ -43,6 +43,12 @@ body {
 p {
   font-weight: 300;
 }
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
 /* 2. LAYOUT CONTAINERS */
 .main-container {
@@ -54,6 +60,7 @@ p {
 .page-wrapper {
   padding-top: 40px; /* Offset from the body padding for content breathing room */
   min-height: 100vh;
+  width: 100%;
 }
 .text-muted {
   color: var(--color-text-muted) !important;
@@ -63,27 +70,27 @@ p {
 .link-cards-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 25px;
-  padding: 40px 0;
+  gap: 15px;
+  padding: 20px 0;
   width: 100%;
   justify-content: center; /* Centers cards in the last row */
   align-items: stretch;
 }
 
 .link-card {
-  flex: 0 1 300px;
-  min-height: 290px;
+  flex: 1 1 300px;
+  height: 230px;
   background: var(--color-card-bg);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 25px;
-  padding: 30px;
+  padding: 20px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   justify-content: space-around;
-  transition: var(--transition);
+  transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .link-card:hover {
@@ -94,13 +101,13 @@ p {
 }
 
 .link-card img {
-  width: 90px;
+  width: 60px;
   margin-bottom: 20px;
-  transition: transform 0.3s ease;
+  transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .link-card:hover img {
-  transform: scale(1.1);
+  transform: scale(1.2);
 }
 
 .link-card h3 {
@@ -116,6 +123,11 @@ p {
   line-height: 1.4;
 }
 
+.main-btn {
+  border-color: var(--color-accent);
+  background-color: #292929;
+  width: 60vw;
+}
 /* 4. NEWS & VIDEO CARDS (Shared Style) */
 .articles-container {
   display: flex;
@@ -244,6 +256,7 @@ p {
 .input-container {
   position: relative;
   max-width: 700px;
+  min-width: 50vw;
   margin: 20px auto 40px;
 }
 
@@ -364,4 +377,53 @@ h2 {
 .Critique {
   white-space: pre-wrap;
   line-height: 1.7;
+}
+/* Container for the chips */
+.mood-container {
+  padding: 20px 0;
+  scrollbar-width: none; /* Hides scrollbar on Firefox */
+}
+
+.mood-container::-webkit-scrollbar {
+  display: none; /* Hides scrollbar on Chrome/Safari */
+}
+
+/* Base style for the chip */
+.mood-chip {
+  background: rgba(255, 255, 255, 0.05); /* Subtle glass effect */
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 20px;
+  border-radius: 50px; /* Makes them pill-shaped */
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+/* Hover effect */
+.mood-chip:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #a855f7; /* A purple tone from your logo */
+  transform: translateY(-2px);
+}
+
+/* The ACTIVE state (when selected) */
+.mood-chip.active {
+  background: linear-gradient(
+    90deg,
+    #9333ea,
+    #db2777
+  ) !important; /* Matching your gradient */
+  border-color: transparent;
+  box-shadow: 0 0 15px rgba(147, 51, 234, 0.4); /* Neon glow */
+  font-weight: bold;
+}
+
+.mood-container {
+  display: flex;
+  flex-wrap: nowrap;
+  max-width: 450px;
+  margin-bottom: 10px;
 }

@@ -41,7 +41,7 @@ function Senario() {
   }, []);
 
   return (
-    <div className="main-container">
+    <div className="container">
       <div className="text-center mb-5">
         <h1 className="display-5 " ref={textRef}>
           Screenplay Architect

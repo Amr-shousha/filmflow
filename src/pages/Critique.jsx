@@ -2,7 +2,7 @@
 import iconSubmit from "../assets/imgs/icons/submit.png";
 import React, { useState } from "react";
 import { useSplitTextAnimation } from "../components/UseSplitTextAnimation";
-
+import SearchBar from "../components/SearchBar";
 import MovieIDSearch from "../components/MovieIDSearch";
 function CriticsWriter() {
   const [input, setInput] = useState("");
@@ -60,22 +60,18 @@ function CriticsWriter() {
     }
   }
   return (
-    <div className="main-container">
+    <div className="container">
       {!loading && (
         <h1 className="display-5" ref={textRef}>
           Professional AI critique
         </h1>
       )}
-      <form onSubmit={handleSubmit}>
-        <div className="input-container">
-          <input
-            type="text"
-            value={input}
-            placeholder="Name of movie or show"
-            onChange={(e) => setInput(e.target.value)}
-          />
-        </div>
-      </form>
+      <SearchBar
+        setSearchInput={setInput}
+        searchInput={input}
+        autoSubmit={false}
+        handleSubmit={handleSubmit}
+      />
 
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}

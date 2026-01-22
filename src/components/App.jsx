@@ -10,7 +10,9 @@ import Plot from "../pages/PlotSummarizerPage";
 import Interviews from "../pages/Interviews";
 import Senario from "../pages/Senario";
 import Critique from "../pages/Critique";
+import MoodMatch from "../pages/MoodMatch";
 import brandLogo from "../assets/imgs/icons/brand-1-1.png";
+import iconReviews from "../assets/imgs/icons/review.png";
 
 export default function App() {
   return (
@@ -94,6 +96,7 @@ export default function App() {
           <Route path="/interviews" element={<Interviews />} />
           <Route path="/screenplay" element={<Senario />} />
           <Route path="/critique" element={<Critique />} />
+          <Route path="/Mood-match" element={<MoodMatch />} />
         </Routes>
       </div>
     </div>
