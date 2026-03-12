@@ -1,0 +1,81 @@
+@import "../src/App.css";
+.auth-card {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  align-self: center;
+  margin-top: 30%;
+}
+
+.auth-title {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.brand-text {
+  color: var(--color-accent); /* لون البراند الموف */
+}
+
+.auth-subtitle {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+}
+
+/* ستايل الإنبت (Input) */
+.custom-input {
+  background: rgba(26, 26, 26, 0.8) !important;
+  border: 1px solid #333 !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  padding: 12px 15px !important;
+}
+
+.custom-input:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 8px rgba(188, 19, 254, 0.3) !important;
+}
+
+/* زرار التدرج اللوني */
+.btn-primary-gradient {
+  background: var(--color-primary) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border-radius: 10px !important;
+  transition: transform 0.2s ease;
+}
+
+.btn-primary-gradient:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* زرار إنشاء الحساب */
+.btn-outline-purple {
+  border: 1px solidvar(--color-primary) !important;
+  color: var(--color-primary) !important;
+  font-weight: 500 !important;
+  border-radius: 10px !important;
+}
+
+.btn-outline-purple:hover {
+  background: rgba(188, 19, 254, 0.1) !important;
+  color: var(--color-primary) !important;
+}
+/* ده هيغير لون الـ placeholder في كل الـ inputs اللي واخدة كلاس custom-input */
+.custom-input::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important; /* لون أبيض شفاف شوية */
+  opacity: 1; /* عشان نضمن إن المتصفح ميقللش الشفافية من عنده */
+}
+
+/* لزيادة الدقة في متصفحات معينة مثل Firefox */
+.custom-input::-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+.custom-input::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}

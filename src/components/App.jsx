@@ -13,13 +13,14 @@ import Critique from "../pages/Critique";
 import MoodMatch from "../pages/MoodMatch";
 import brandLogo from "../assets/imgs/icons/brand-1-1.png";
 import iconReviews from "../assets/imgs/icons/review.png";
+import Authentication from "../pages/Authentication";
 
 export default function App() {
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark  mb-5 fixed-top">
         <div className="container-fluid">
-          <Link className="navbar-brand" to="/">
+          <Link className="navbar-brand " to="/">
             <img src={brandLogo} style={{ width: "130px" }} alt="" />
           </Link>
 
@@ -36,25 +37,22 @@ export default function App() {
           </button>
 
           <div className="collapse navbar-collapse " id="navbarNav">
-            <ul className="navbar-nav  ">
+            <ul className="navbar-nav me-auto ">
               <li className="nav-item pt-2 ">
                 <NavLink className="nav-link" to="/news">
                   News
                 </NavLink>
               </li>
-
               <li className="nav-item pt-2 ">
                 <NavLink className="nav-link" to="/search">
                   Search
                 </NavLink>
               </li>
-
               <li className="nav-item pt-2">
                 <NavLink className="nav-link" to="/plot">
                   Plot Summary
                 </NavLink>
               </li>
-
               <li className="nav-item pt-2">
                 <a
                   className="nav-link"
@@ -65,7 +63,6 @@ export default function App() {
                   Script Library
                 </a>
               </li>
-
               <li className="nav-item pt-2">
                 <NavLink className="nav-link" to="/screenplay">
                   Screenplay
@@ -80,7 +77,15 @@ export default function App() {
                 <NavLink className="nav-link" to="/interviews">
                   Interviews
                 </NavLink>
-              </li>
+              </li>{" "}
+            </ul>
+            <ul className="navbar-nav">
+              {" "}
+              <button className="">
+                <NavLink className="nav-link" to="/authentication">
+                  sign up{" "}
+                </NavLink>
+              </button>
             </ul>
           </div>
         </div>
@@ -97,6 +102,7 @@ export default function App() {
           <Route path="/screenplay" element={<Senario />} />
           <Route path="/critique" element={<Critique />} />
           <Route path="/Mood-match" element={<MoodMatch />} />
+          <Route path="/authentication" element={<Authentication />} />
         </Routes>
       </div>
     </div>
