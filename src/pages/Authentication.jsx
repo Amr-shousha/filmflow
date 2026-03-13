@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../../src/Authentication.css"; // هننشئ الملف ده دلوقتي
 
 export default function Authentication() {
@@ -10,7 +10,9 @@ export default function Authentication() {
   const [displayName, setDisplayName] = useState(null);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
+  const redirectTo = location.state?.from || "/";
   const handleAuth = async (type) => {
     const { data, error } =
       type === "signup"
@@ -26,7 +28,7 @@ export default function Authentication() {
         : await supabase.auth.signInWithPassword({ email, password });
 
     if (error) alert(error.message);
-    else navigate("/");
+    else navigate(redirectTo);
   };
 
   const signUP = () => {
