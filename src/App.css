@@ -222,7 +222,7 @@ p {
   text-align: center;
   opacity: 0;
   transition: opacity 0.3s ease;
-  pointer-events: none;
+
   z-index: 2;
   padding: 15px;
 }
@@ -242,7 +242,17 @@ p {
 .movie-card:hover .movie-overlay h3 {
   transform: translateY(0);
 }
-
+.add-to-favorite {
+  border-radius: 10px;
+  border: #000;
+  font-size: 14px; /* position: relative;
+  z-index: 100; */
+  transition: all 0.8s ease;
+}
+.add-to-favorite:hover {
+  /* position: relative;
+  z-index: 100; */
+}
 /* 6. NAVBAR */
 .navbar {
   backdrop-filter: blur(10px);

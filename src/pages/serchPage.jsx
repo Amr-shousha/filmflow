@@ -3,8 +3,8 @@ import SearchBar from "../components/SearchBar.jsx";
 import notFoundImg from "../assets/imgs/missing-image.jpg";
 import MovieIDSearch from "../components/MovieIDSearch.jsx";
 import { useSplitTextAnimation } from "../components/UseSplitTextAnimation";
-
-function Search() {
+import AddToFavorite from "../components/AddToFavorite.jsx";
+function Search({ user }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [searchInput, setSearchInput] = useState("");
@@ -17,26 +17,31 @@ function Search() {
 
   useEffect(() => {
     if (!searchInput) return;
-    setLoading(true);
-    async function handleSubmit() {
-      setError("");
-      setSearchIDResult(null);
-      setSearchResult(null);
-      try {
-        const response = await fetch("/.netlify/functions/search", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ searchInput }),
-        });
-        const refinedData = await response.json();
-        setSearchResult(refinedData);
-      } catch (err) {
-        setError(err.message || "Something went wrong");
-      } finally {
-        setLoading(false);
+
+    const delayDevounce = setTimeout(() => {
+      setLoading(true);
+      async function handleSubmit() {
+        setError("");
+        setSearchIDResult(null);
+        setSearchResult(null);
+        try {
+          const response = await fetch("/.netlify/functions/search", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ searchInput }),
+          });
+          const refinedData = await response.json();
+          setSearchResult(refinedData);
+        } catch (err) {
+          setError(err.message || "Something went wrong");
+        } finally {
+          setLoading(false);
+        }
       }
-    }
-    handleSubmit();
+      handleSubmit();
+    }, 500);
+
+    return () => clearTimeout(delayDevounce);
   }, [searchInput]);
 
   function cancelSearch() {
@@ -114,6 +119,9 @@ function Search() {
                         <span className="badge bg-light text-dark small">
                           {movie.Type}
                         </span>
+                        <div onClick={(e) => e.stopPropagation()}>
+                          <AddToFavorite user={user} movie={movie} />
+                        </div>
                       </div>
                     </div>
                   </div>

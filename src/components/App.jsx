@@ -162,7 +162,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Options />} />
           <Route path="/news" element={<News />} />
-          <Route path="/search" element={<Search />} />
+          <Route path="/search" element={<Search user={user} />} />
           <Route path="/plot" element={<Plot />} />
           <Route path="/interviews" element={<Interviews />} />
           <Route path="/screenplay" element={<Senario />} />
