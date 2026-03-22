@@ -168,7 +168,7 @@ export default function App() {
           <Route path="/interviews" element={<Interviews />} />
           <Route path="/screenplay" element={<Senario />} />
           <Route path="/critique" element={<Critique />} />
-          <Route path="/Mood-match" element={<MoodMatch />} />
+          <Route path="/Mood-match" element={<MoodMatch user={user} />} />
           <Route path="/authentication" element={<Authentication />} />
           <Route path="/watchlist" element={<WatchList user={user} />} />
         </Routes>

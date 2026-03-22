@@ -116,7 +116,7 @@ function Search({ user }) {
               >
                 <span> ← Back to Results </span>
               </button>
-              <MovieIDSearch IDResult={searchIDResult} />
+              <MovieIDSearch IDResult={searchIDResult} user={user} />
             </div>
           )}
         </>

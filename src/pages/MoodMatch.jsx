@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import MovieIDSearch from "../components/MovieIDSearch";
 import { useSplitTextAnimation } from "../components/UseSplitTextAnimation";
 
-function MoodReccomendations() {
+function MoodReccomendations({ user }) {
   const [mood, setMood] = useState("");
   const [era, setEra] = useState("");
   const [creator, setCreator] = useState("");
@@ -249,7 +249,11 @@ function MoodReccomendations() {
             <h4 className="text-white mb-2">{movie.corrected_title}</h4>
             <p className="text-muted small mb-4">{movie.summary}</p>
             {/* This child component handles its own fetch using the ID provided here */}
-            <MovieIDSearch IDResult={movie.details} amount={"min"} />
+            <MovieIDSearch
+              IDResult={movie.details}
+              amount={"min"}
+              user={user}
+            />
           </div>
         ))}
     </div>

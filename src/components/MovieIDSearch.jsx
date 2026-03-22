@@ -1,8 +1,9 @@
 import { useState } from "react";
 import imdbLogo from "../assets/imgs/icons/imdb.png";
 import notFoundImg from "../assets/imgs/missing-image.jpg"; // Added missing import
+import AddToFavorite from "../components/AddToFavorite.jsx";
 
-export default function MovieIDResult({ IDResult, amount = "max" }) {
+export default function MovieIDResult({ IDResult, amount = "max", user }) {
   const [size, setSize] = useState(amount);
 
   return (
@@ -26,22 +27,32 @@ export default function MovieIDResult({ IDResult, amount = "max" }) {
           <div className="details text-start">
             <h2 className="display-6 fw-bold mb-3">{IDResult.Title}</h2>
 
-            <div className="info-box d-flex flex-wrap gap-3 mb-4">
-              <span className="badge bg-primary px-3 py-2">
-                🗓 {IDResult.Year}
-              </span>
-              <span className="badge bg-secondary px-3 py-2">
-                {IDResult.Genre}
-              </span>
-              <span className="badge bg-dark border border-secondary px-3 py-2">
-                <img
-                  className="icon me-1"
-                  src={imdbLogo}
-                  style={{ width: "18px" }}
-                  alt=""
-                />
-                {IDResult.imdbRating}
-              </span>
+            <div className="row justify-content-between align-items-center">
+              <div className=" col-6  mb-4">
+                <span className="badge me-2 mt-1 bg-primary px-3 py-2">
+                  🗓 {IDResult.Year}
+                </span>
+                <span className="badge  me-2 mt-1 bg-secondary px-3 py-2">
+                  {IDResult.Genre}
+                </span>
+                <span className="badge me-2  mt-1 bg-dark border border-secondary px-3 py-2">
+                  <img
+                    className="icon me-1"
+                    src={imdbLogo}
+                    style={{ width: "18px" }}
+                    alt=""
+                  />
+                  {IDResult.imdbRating}
+                </span>
+              </div>
+              <div className=" col-4  mb-4  ">
+                {" "}
+                {/* <button className=" btn btn-outline-light text-nowrap">
+                  {" "}
+                  add to faivorite ♥️
+                </button>{" "} */}
+                <AddToFavorite user={user} movie={IDResult} />
+              </div>
             </div>
 
             <div className="row g-2 text-muted mb-4">

@@ -44,7 +44,7 @@ export default function Watchlist({ user }) {
       </h1>
 
       {!searchIDResult && (
-        <div className="row  row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 mt-5    g-4 mt-5 justify-content-center">
+        <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4  mt-5">
           {" "}
           {movies.length !== 0 ? (
             // JSON.stringify(movies)
