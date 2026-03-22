@@ -1,4 +1,9 @@
 [functions]
 directory = "functions"
 [build.environment]
-  NODE_VERSION = "18"
+NODE_VERSION = "22"
+  [dev]
+  command = "npm run dev"
+  targetPort = 5173  # بورت الفايت
+  port = 8888        # بورت نتليفاي
+  autoLaunch = false # عشان ميفضلش يفتح تابات كتير تستهلك الميموري

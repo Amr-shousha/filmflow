@@ -22,6 +22,8 @@ import brandLogo from "../assets/imgs/icons/brand-1-1.png";
 import AccountIcon from "../assets/imgs/icons/AccountIcon.svg";
 import iconReviews from "../assets/imgs/icons/review.png";
 import Authentication from "../pages/Authentication";
+import WatchList from "../pages/WatchList";
+
 import { supabase } from "../lib/supabaseClient"; // تأكد من استيراد سوبابيز
 export default function App() {
   const [user, setUser] = useState(null); // بنخزن اليوزر هنا بدل true/false
@@ -41,8 +43,7 @@ export default function App() {
   }, []);
   const handelWatchList = () => {
     if (user) {
-      // navigate("/watchlist");
-      alert("access granted");
+      navigate("/watchlist");
     } else {
       navigate("/authentication", { state: { from: "/watchlist" } });
     }
@@ -169,6 +170,7 @@ export default function App() {
           <Route path="/critique" element={<Critique />} />
           <Route path="/Mood-match" element={<MoodMatch />} />
           <Route path="/authentication" element={<Authentication />} />
+          <Route path="/watchlist" element={<WatchList user={user} />} />
         </Routes>
       </div>
     </div>

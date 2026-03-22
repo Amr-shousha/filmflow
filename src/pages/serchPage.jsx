@@ -4,17 +4,18 @@ import notFoundImg from "../assets/imgs/missing-image.jpg";
 import MovieIDSearch from "../components/MovieIDSearch.jsx";
 import { useSplitTextAnimation } from "../components/UseSplitTextAnimation";
 import AddToFavorite from "../components/AddToFavorite.jsx";
+import { useMovieSearchByID } from "../front-end-functions/useSearchMovieByID.js";
 function Search({ user }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState(null);
-  const [searchIDResult, setSearchIDResult] = useState(null);
   const { textRef } = useSplitTextAnimation();
 
   // We can keep this for logic, but the CSS .movie-card:hover will handle the visual show/hide
-  const [hoveredMovieId, setHoveredMovieId] = useState(null);
-
+  // const [hoveredMovieId, setHoveredMovieId] = useState(null);
+  const { searchIDResult, setSearchIDResult, searchMovieByID } =
+    useMovieSearchByID();
   useEffect(() => {
     if (!searchInput) return;
 
@@ -48,25 +49,6 @@ function Search({ user }) {
     setSearchIDResult(null);
   }
 
-  const movieSearchByID = async (e, ID) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    try {
-      const response = await fetch("/.netlify/functions/movieIDSearch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ searchInput: ID }),
-      });
-      const MovieIDResult = await response.json();
-      setSearchIDResult(MovieIDResult);
-    } catch (err) {
-      setError(err.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="container">
       <h1 className="text-center display-5 " ref={textRef}>
@@ -96,10 +78,7 @@ function Search({ user }) {
                 <div className="col" key={movie.imdbID}>
                   <div
                     className="movie-card hover-card h-100"
-                    onClick={(e) => movieSearchByID(e, movie.imdbID)}
-                    onMouseEnter={() => setHoveredMovieId(movie.imdbID)}
-                    onMouseLeave={() => setHoveredMovieId(null)}
-                    style={{ cursor: "pointer" }}
+                    onClick={(e) => searchMovieByID(e, movie.imdbID)}
                   >
                     <div className="position-relative h-100">
                       <img

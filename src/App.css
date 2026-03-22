@@ -206,6 +206,7 @@ p {
   position: relative;
   overflow: hidden;
   border-radius: 15px;
+  cursor: pointer;
 }
 
 .movie-overlay {
