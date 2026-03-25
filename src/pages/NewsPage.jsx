@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import iconSubmit from "../assets/imgs/icons/submit.png";
 import { useSplitTextAnimation } from "../components/UseSplitTextAnimation";
+import { supabase } from "../lib/supabaseClient";
 
 function News() {
   const [news, setNews] = useState([]);
@@ -14,12 +15,11 @@ function News() {
       setLoading(true);
       setError("");
       try {
-        const response = await fetch("/.netlify/functions/newsG", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        });
-        if (!response.ok) throw new Error(`Server error: ${response.status}`);
-        const data = await response.json();
+        const { data, error: funcError } = await supabase.functions.invoke(
+          "newsG",
+          { method: "POST" }, // Uppercase POST
+        );
+        if (funcError) throw new Error(funcError.message);
         setNews(data);
       } catch (err) {
         setError(`Failed to fetch news: ${err.message}`);

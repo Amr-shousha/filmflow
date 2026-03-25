@@ -29,7 +29,7 @@ function AddToFavorite({ user, movie }) {
     e.stopPropagation();
 
     if (!user) {
-      alert("سجل دخول الأول يا بطل عشان تحفظ أفلامك!");
+      alert("log in first !");
       return;
     }
 
@@ -43,7 +43,7 @@ function AddToFavorite({ user, movie }) {
 
       if (!error) {
         setIsAdded(false);
-        alert("تمت الإزالة من المفضلة 🗑️");
+        alert("movie deleted ");
       }
     } else {
       // إضافة
