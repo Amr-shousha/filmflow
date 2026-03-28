@@ -1,15 +1,16 @@
-/* 1. VARIABLES & BASE */
+/* 1. VARIABLES & BASE - DEEP AMETHYST */
 :root {
-  --color-primary: #800080;
-  --color-accent: #9d4edd;
-  --color-bg: #0f0f10;
-  --color-card-bg: #1e1e22;
-  --color-text-main: #f8f9fa;
-  --color-text-muted: #c2ccd5;
-  --color-text-dark: #868e96;
-  --glass: rgba(255, 255, 255, 0.05);
-  --transition: all 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  --color-primary: #4c1d95; /* Deep Royal Purple */
+  --color-accent: #a78bfa; /* Soft Lavender */
+  --color-bg: #0c0a0f; /* Deep Obsidian */
+  --color-card-bg: #16141c; /* Muted Eggplant Slate */
+  --color-text-main: #f5f3ff;
+  --color-text-muted: #9ca3af;
+  --color-text-dark: #4b5563;
+  --glass: rgba(167, 139, 250, 0.03);
+  --transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 @font-face {
   font-family: "Ubuntu";
   src: url("./assets/fonts/Ubuntu/Ubuntu-Light.ttf") format("truetype");
@@ -38,16 +39,20 @@ body {
   color: var(--color-text-main);
   font-family: "Ubuntu", sans-serif;
   overflow-x: hidden;
-  font-family: "Ubuntu";
+  letter-spacing: 0.5px;
 }
+
 p {
   font-weight: 300;
 }
+
 .container {
   display: flex;
   flex-direction: column;
+  padding: 20px 0;
   align-items: center;
-  justify-content: center;
+  justify-content: center !important;
+  overflow: hidden;
 }
 
 /* 2. LAYOUT CONTAINERS */
@@ -58,22 +63,23 @@ p {
 }
 
 .page-wrapper {
-  padding-top: 40px; /* Offset from the body padding for content breathing room */
+  padding-top: 40px;
   min-height: 100vh;
   width: 100%;
 }
+
 .text-muted {
   color: var(--color-text-muted) !important;
 }
 
-/* 3. HOME NAVIGATION CARDS (Options page) */
+/* 3. HOME NAVIGATION CARDS */
 .link-cards-container {
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
   padding: 20px 0;
   width: 100%;
-  justify-content: center; /* Centers cards in the last row */
+  justify-content: center;
   align-items: stretch;
 }
 
@@ -81,29 +87,30 @@ p {
   flex: 1 1 300px;
   height: 230px;
   background: var(--color-card-bg);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(167, 139, 250, 0.1);
   border-radius: 25px;
   padding: 20px;
   cursor: pointer;
   display: flex;
+  backdrop-filter: blur(15px);
   flex-direction: column;
   align-items: center;
   text-align: center;
   justify-content: space-around;
-  transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: var(--transition);
 }
 
 .link-card:hover {
   transform: translateY(-12px);
-  background: linear-gradient(145deg, var(--color-primary), #4b0082);
-  box-shadow: 0 20px 40px rgba(128, 0, 128, 0.3);
+  background: linear-gradient(145deg, #2e1065, #4c1d95);
+  box-shadow: 0 20px 40px rgba(76, 29, 149, 0.3);
   border-color: var(--color-accent);
 }
 
 .link-card img {
   width: 60px;
   margin-bottom: 20px;
-  transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: var(--transition);
 }
 
 .link-card:hover img {
@@ -124,70 +131,86 @@ p {
 }
 
 .main-btn {
-  border-color: var(--color-accent);
-  background-color: #292929;
+  border: 1px solid var(--color-accent);
+  background-color: #1e1b29;
+  color: var(--color-text-main);
   width: 60vw;
+  padding: 12px;
+  border-radius: 25px;
+  transition: var(--transition);
 }
+
 /* 4. NEWS & VIDEO CARDS (Shared Style) */
 .articles-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 25px;
-  justify-content: center; /* Magic fix for centering the last row */
-  padding: 20px 0;
+  gap: 30px; /* Slightly wider gap for a cleaner look */
+  justify-content: center;
+  padding: 30px 0;
 }
 
 .article-link {
   text-decoration: none;
   color: inherit;
   display: block;
+  transition: var(--transition);
+  flex: 0 1 330px;
+}
+
+.article-link:hover {
+  text-decoration: none;
+  color: inherit;
 }
 
 .article-card {
-  flex: 0 1 350px; /* Base width for news/video cards */
+  width: 100%;
+  min-height: 440px; /* Increased slightly to account for extra padding */
   background: var(--color-card-bg);
-  border-radius: 15px;
+  border-radius: 18px; /* Softer corners are more relaxing */
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: var(--transition);
-  height: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
+  transition: var(--transition);
 }
 
-.article-image-container,
-.video-img-container {
+.article-card:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
+
+.article-image-container {
   width: 100%;
-  aspect-ratio: 16/9;
+  height: 190px;
   overflow: hidden;
   background: #000;
 }
 
-.article-img,
-.video-img {
+.article-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  opacity: 0.85;
+  transition: transform 0.6s ease;
 }
 
-.article-card:hover .article-img {
-  transform: scale(1.05);
-}
-
+/* THE DETAILS SECTION - Added more padding here */
 .article-details {
-  padding: 20px;
+  padding: 24px; /* Increased from 20px for better breathing room */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   flex-grow: 1;
+  gap: 12px; /* Adds consistent space between title, text, and footer */
 }
 
+/* SMALLER TITLES */
 .article-details .title {
-  font-size: 1.15rem;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: #fff;
+  font-size: 1.05rem; /* Reduced from 1.15rem for a sleeker look */
+  line-height: 1.4;
+  font-weight: 600; /* Medium-Bold is often more professional than Heavy-Bold */
+  color: var(--color-text-main);
+  margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -195,18 +218,24 @@ p {
 }
 
 .article-details .trail {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--color-text-muted);
-  line-height: 1.5;
-  margin-bottom: 20px;
+  line-height: 1.6;
+  margin: 0;
 }
 
+/* Footer info inside card */
+.article-details .small {
+  margin-top: auto;
+  padding-top: 15px;
+  letter-spacing: 0.3px;
+  color: var(--color-text-dark);
+}
 /* 5. MOVIE SEARCH OVERLAYS */
 .movie-card {
   position: relative;
   overflow: hidden;
   border-radius: 15px;
-  cursor: pointer;
 }
 
 .movie-overlay {
@@ -215,15 +244,13 @@ p {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(128, 0, 128, 0.85);
+  background: rgba(46, 16, 101, 0.9);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
   opacity: 0;
   transition: opacity 0.3s ease;
-
   z-index: 2;
   padding: 15px;
 }
@@ -232,209 +259,145 @@ p {
   opacity: 1;
 }
 
-.movie-overlay h3,
-.movie-overlay h6 {
-  color: #fff;
-  font-weight: 700;
-  transform: translateY(10px);
-  transition: transform 0.3s ease;
-}
-
-.movie-card:hover .movie-overlay h3 {
-  transform: translateY(0);
-}
 .add-to-favorite {
   border-radius: 10px;
-  border: #000;
-  font-size: 14px; /* position: relative;
-  z-index: 100; */
-  transition: all 0.8s ease;
+  border: 1px solid var(--color-accent);
+  background: transparent;
+  color: #fff;
+  transition: var(--transition);
 }
+
 .add-to-favorite:hover {
-  /* position: relative;
-  z-index: 100; */
+  background: var(--color-accent);
+  color: var(--color-bg);
 }
+
 /* 6. NAVBAR */
 .navbar {
-  backdrop-filter: blur(10px);
-  background-color: rgba(128, 0, 128, 0.85) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  background-color: rgba(12, 10, 15, 0.9) !important;
+  border-bottom: 1px solid rgba(167, 139, 250, 0.15);
 }
+
 .navbar-dark .navbar-nav .nav-link.active {
-  color: rgb(255, 89, 89) !important;
+  color: var(--color-accent) !important;
+  font-weight: 700;
 }
+
 /* 7. WIZARD & FORMS */
-.input-container {
-  position: relative;
-  max-width: 700px;
-  min-width: 50vw;
-  margin: 20px auto 40px;
-}
 
 .input-container input {
   width: 100%;
   padding: 15px 60px 15px 25px;
   border-radius: 50px;
-  border: 2px solid var(--color-primary);
-  background: var(--color-card-bg);
+  border: 1px solid var(--color-primary);
+  background: #1a1625;
   color: white;
   transition: var(--transition);
 }
 
-.script-textarea {
-  width: 100%;
-  height: 250px;
-  background: #fdfdfd;
-  color: #333;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  font-family: "Courier Prime", monospace;
-  font-size: 1.1rem;
-  padding: 25px;
-  line-height: 1.6;
-  resize: none;
-}
-
 .btn-accent {
   background-color: var(--color-accent);
-  color: white;
+  color: var(--color-bg);
+  font-weight: 600;
   border: none;
   border-radius: 8px;
   transition: var(--transition);
 }
 
 .btn-accent:hover {
-  background-color: var(--color-primary);
+  background-color: #fff;
   transform: scale(1.05);
 }
 
-/* 8. UTILS */
-.raduis {
-  border-radius: 15px !important;
-}
+/* 8. MOOD CHIPS - Cinematic Re-design */
+/* .mood-chip {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 18px;
+  border-radius: 12px;
+  transition: var(--transition);
+  width: auto;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+} */
 
-.hover-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+.mood-chip:hover {
+  background: rgba(167, 139, 250, 0.1);
   border-color: var(--color-accent);
+  color: #fff;
+  transform: translateY(-2px);
 }
 
+/* .mood-chip.active {
+  background: var(--color-accent) !important; 
+  color: #000 !important; 
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(167, 139, 250, 0.4);
+} */
+
+/* 8. MOOD CHIPS & SCROLLING */
+.mood-container {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  padding: 10px 5px;
+  overflow-x: auto;
+  cursor: grab; /* Shows the open hand */
+  user-select: none; /* Prevents text highlighting while dragging */
+  -webkit-overflow-scrolling: touch; /* Smooth momentum scroll for iOS */
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
+
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 5%,
+    black 90%,
+    transparent 100%
+  );
+}
+
+.mood-container::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome/Safari */
+}
+
+.mood-chip {
+  flex: 0 0 auto; /* CRITICAL: Prevents chips from shrinking */
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 18px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.mood-chip.active {
+  background: var(--color-accent) !important;
+  color: #000 !important;
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(167, 139, 250, 0.4);
+  cursor: grabbing; /* Shows the closed fist when clicking */
+}
+/* 9. UTILS */
 .summary-result {
-  background: var(--glass);
+  background: rgba(167, 139, 250, 0.02);
   padding: 30px;
   border-radius: 20px;
   border-left: 5px solid var(--color-accent);
-  margin-top: 30px;
 }
 
 h1,
 h2 {
   text-align: center;
   font-weight: 700;
-  margin-bottom: 30px;
-}
-.text-accent {
-  color: var(--color-accent);
-}
-/* Container for the grid */
-.articles-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center; /* This keeps them centered if the row isn't full */
-  width: 100%;
-}
-
-/* The card sizing */
-.article-card {
-  width: 330px;
-  min-height: 420px;
-  background: var(--color-card-bg);
-  border-radius: 15px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s ease;
-}
-
-/* Ensure images don't stretch the card width */
-.article-image-container {
-  width: 100%;
-  height: 180px; /* Fixed height for consistency */
-  overflow: hidden;
-}
-
-.article-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.article-details .title {
-  font-size: 1rem;
-  font-weight: 700;
-  /* height: 3rem;  */
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-.article-details .trail {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-}
-.Critique {
-  white-space: pre-wrap;
-  line-height: 1.7;
-}
-/* Container for the chips */
-.mood-container {
-  padding: 20px 0;
-  scrollbar-width: none; /* Hides scrollbar on Firefox */
-}
-
-.mood-container::-webkit-scrollbar {
-  display: none; /* Hides scrollbar on Chrome/Safari */
-}
-
-/* Base style for the chip */
-.mood-chip {
-  background: rgba(255, 255, 255, 0.05); /* Subtle glass effect */
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 10px 20px;
-  border-radius: 50px; /* Makes them pill-shaped */
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.3s ease;
-  font-family: inherit;
-  font-size: 0.9rem;
-}
-
-/* Hover effect */
-.mood-chip:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #a855f7; /* A purple tone from your logo */
-  transform: translateY(-2px);
-}
-
-/* The ACTIVE state (when selected) */
-.mood-chip.active {
-  background: linear-gradient(
-    90deg,
-    #9333ea,
-    #db2777
-  ) !important; /* Matching your gradient */
-  border-color: transparent;
-  box-shadow: 0 0 15px rgba(147, 51, 234, 0.4); /* Neon glow */
-  font-weight: bold;
-}
-
-.mood-container {
-  display: flex;
-  flex-wrap: nowrap;
-  max-width: 450px;
-  margin-bottom: 10px;
+  color: #fff;
 }

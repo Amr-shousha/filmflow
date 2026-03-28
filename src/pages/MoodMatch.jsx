@@ -1,18 +1,21 @@
 import iconSubmit from "../assets/imgs/icons/submit.png";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MovieIDSearch from "../components/MovieIDSearch";
 import { useSplitTextAnimation } from "../components/UseSplitTextAnimation";
-
+import { supabase } from "../lib/supabaseClient";
+import Watchlist from "./WatchList";
+import { handleDragScroll } from "../front-end-functions/hasndleDragScroll";
 function MoodReccomendations({ user }) {
   const [mood, setMood] = useState("");
   const [era, setEra] = useState("");
   const [creator, setCreator] = useState("");
+  const [result, setResult] = useState(null);
 
-  const [result, setResult] = useState(null); // Changed to null for cleaner conditional rendering
+  const [moviesFromSupabase, setMoviesFromSupabase] = useState(null);
   const [enrichedData, setEnrichedData] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  const [watchlistData, setWatchlistData] = useState(null);
   const { textRef } = useSplitTextAnimation();
 
   const filters = {
@@ -53,64 +56,13 @@ function MoodReccomendations({ user }) {
     ],
   };
 
-  //   async function handleSubmit() {
-  //     setLoading(true);
-  //     setError("");
-  //     setResult(null); // Clear previous results when searching again
-
-  //     const payload = {
-  //       mood: mood,
-  //       era: era,
-  //       creator: creator,
-  //     };
-
-  //     try {
-  //       const response = await fetch("/.netlify/functions/moodRecommendation", {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({ prompt: payload }),
-  //       });
-
-  //       if (!response.ok) {
-  //         throw new Error(`Server error: ${response.status}`);
-  //       }
-
-  //       const data = await response.json();
-  //       setResult(data);
-  //       console.log(data);
-  //       /////////////////////////////////
-
-  //       const movieSearchByID = data.map(async (movie) => {
-  //         const response = await fetch("/.netlify/functions/movieIDSearch", {
-  //           method: "POST",
-  //           headers: { "Content-Type": "application/json" },
-  //           body: JSON.stringify({ searchInput: movie.omdb_id }),
-  //         });
-
-  //         const MovieIDResult = await response.json();
-  //         //   setSearchIDResult(MovieIDResult);
-  //         return { ...movie, details: MovieIDResult };
-  //       });
-
-  //       // ...but we WAIT for them here (Outside the .map, inside the Try)
-  //       const finalResults = await Promise.all(movieSearchByID);
-
-  //       setEnrichedData(finalResults); // This triggers the UI to show all 3 at once
-  //       console.log("Success! All 3 movies enriched:", finalResults);
-  //     } catch (err) {
-  //       console.error(err);
-  //       setError("Failed to fetch recommendations. Please try again.");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
   async function handleSubmit() {
     setEnrichedData("");
-
     setLoading(true);
     setError("");
     setResult(null);
     const payload = {
+      watchlist: false,
       mood: mood,
       era: era,
       creator: creator,
@@ -127,7 +79,6 @@ function MoodReccomendations({ user }) {
       const data = await response.json();
       setResult(data);
 
-      // STEP 2: Create the list of Promises
       const movieSearchPromises = data.map(async (movie) => {
         try {
           const res = await fetch("/.netlify/functions/movieIDSearch", {
@@ -135,10 +86,7 @@ function MoodReccomendations({ user }) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ searchInput: movie.omdb_id }),
           });
-
           const movieDetails = await res.json();
-
-          // Merge AI summary + OMDb details into one object
           return { ...movie, details: movieDetails };
         } catch (innerErr) {
           console.error(
@@ -149,11 +97,92 @@ function MoodReccomendations({ user }) {
         }
       });
 
-      // STEP 3: Wait for all movies to finish (inside the main Try)
       const finalResults = await Promise.all(movieSearchPromises);
-
       setEnrichedData(finalResults);
-      console.log("Success! All movies enriched:", finalResults);
+    } catch (err) {
+      console.error("Critical Error:", err);
+      setError("Failed to fetch recommendations. Please try again.");
+    } finally {
+      setLoading(false);
+      setMood("");
+      setEra("");
+      setCreator("");
+    }
+  }
+  let moviesData;
+  async function fetchMyWatchlist() {
+    if (user) {
+      const { data, error } = await supabase
+        .from("favorites")
+        .select("*")
+        .eq("user_id", user.id);
+
+      if (error) {
+        console.error("Error fetching:", error);
+      } else {
+        setMoviesFromSupabase(data);
+        moviesData = data;
+      }
+      console.log("my watch list :", moviesData);
+    }
+  }
+
+  useEffect(() => {
+    if (user) fetchMyWatchlist();
+  }, [user]);
+
+  async function handleSubmit2() {
+    if (!moviesFromSupabase || moviesFromSupabase.length === 0) {
+      return alert("Your watchlist is empty! Add some movies first.");
+    }
+    setEnrichedData("");
+    setLoading(true);
+    setError("");
+    setResult(null);
+    const currentPayload = {
+      watchlist: true,
+      movies: moviesFromSupabase,
+      mood: mood,
+      era: era,
+      creator: creator,
+    };
+
+    // 3. Update state so the UI knows, but use the local variable for the fetch
+    setWatchlistData(currentPayload);
+
+    try {
+      const response = await fetch("/.netlify/functions/moodRecommendation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: currentPayload }),
+      });
+
+      if (!response.ok) throw new Error(`AI Error: ${response.status}`);
+
+      const moodData = await response.json();
+      console.log(" row from mood function" + response);
+      setResult(moodData);
+
+      const movieSearchPromises = moodData.map(async (movie) => {
+        try {
+          const res = await fetch("/.netlify/functions/movieIDSearch", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ searchInput: movie.omdb_id }),
+          });
+          const movieDetails = await res.json();
+          return { ...movie, details: movieDetails };
+        } catch (innerErr) {
+          console.error(
+            `Failed to fetch details for ${movie.omdb_id}`,
+            innerErr,
+          );
+          return movie;
+        }
+      });
+
+      const finalResults = await Promise.all(movieSearchPromises);
+      setEnrichedData(finalResults);
     } catch (err) {
       console.error("Critical Error:", err);
       setError("Failed to fetch recommendations. Please try again.");
@@ -166,66 +195,80 @@ function MoodReccomendations({ user }) {
   }
 
   return (
-    <div className="container ">
-      <h1 className="display-5 mb-4" ref={textRef}>
-        Mood Match{" "}
-      </h1>
+    <div className=" container ">
+      <div className=" ">
+        <h1 className="display-5 mb-4" ref={textRef}>
+          Mood Match{" "}
+        </h1>
+        <p className="text-start">Moods: </p>
+        <div
+          className="mood-container mb-3"
+          onMouseEnter={(e) => handleDragScroll(e)}
+          style={{ display: "flex", gap: "10px", overflowX: "auto" }}
+        >
+          {filters.moods.map((m) => (
+            <button
+              key={m.id}
+              onClick={() => setMood(mood === m.id ? "" : m.id)}
+              className={`mood-chip ${mood === m.id ? "active" : ""}`}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
+        <p>Creators: </p>
+        <div
+          className="mood-container mb-3"
+          onMouseEnter={(e) => handleDragScroll(e)}
+          style={{ display: "flex", gap: "10px", overflowX: "auto" }}
+        >
+          {filters.creators.map((m) => (
+            <button
+              key={m.id}
+              onClick={() => setCreator(creator === m.id ? "" : m.id)}
+              className={`mood-chip ${creator === m.id ? "active" : ""}`}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
+        <p>Eras: </p>
 
-      {/* Mood Filter Row */}
-      <div
-        className="mood-container mb-3"
-        style={{ display: "flex", gap: "10px", overflowX: "auto" }}
-      >
-        {filters.moods.map((m) => (
-          <button
-            key={m.id}
-            onClick={() => setMood(m.id)}
-            className={`mood-chip ${mood === m.id ? "active" : ""}`}
-          >
-            {m.label}
-          </button>
-        ))}
+        <div
+          className="mood-container mb-4"
+          onMouseEnter={(e) => handleDragScroll(e)}
+          style={{ display: "flex", gap: "10px", overflowX: "auto" }}
+        >
+          {filters.eras.map((m) => (
+            <button
+              key={m.id}
+              onClick={() => setEra(era === m.id ? "" : m.id)}
+              className={`mood-chip ${era === m.id ? "active" : ""}`}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
       </div>
+      <div className="w-100 row gx-4 gap-2 justify-content-center">
+        <button
+          onClick={() => handleSubmit()}
+          className="btn btn-primary mood-chip  col-md-4 px-4 py-2"
+          disabled={loading}
+        >
+          {loading ? "Finding films..." : "Recommend randomly"}
+        </button>
 
-      {/* Creator Filter Row */}
-      <div
-        className="mood-container mb-3"
-        style={{ display: "flex", gap: "10px", overflowX: "auto" }}
-      >
-        {filters.creators.map((m) => (
+        {user && (
           <button
-            key={m.id}
-            onClick={() => setCreator(m.id)}
-            className={`mood-chip ${creator === m.id ? "active" : ""}`}
+            onClick={() => handleSubmit2()}
+            className="btn btn-primary mood-chip col-md-4 px-4 py-2"
+            disabled={loading}
           >
-            {m.label}
+            {loading ? "Finding films..." : "Recommend from Watchlist"}
           </button>
-        ))}
+        )}
       </div>
-
-      {/* Era Filter Row */}
-      <div
-        className="mood-container mb-4"
-        style={{ display: "flex", gap: "10px", overflowX: "auto" }}
-      >
-        {filters.eras.map((m) => (
-          <button
-            key={m.id}
-            onClick={() => setEra(m.id)}
-            className={`mood-chip ${era === m.id ? "active" : ""}`}
-          >
-            {m.label}
-          </button>
-        ))}
-      </div>
-
-      <button
-        onClick={() => handleSubmit()}
-        className="btn btn-primary mood-chip px-4 py-2"
-        disabled={loading}
-      >
-        {loading ? "Finding films..." : "Recommend . . ."}
-      </button>
 
       {error && (
         <p className="mt-3" style={{ color: "red" }}>
@@ -233,13 +276,11 @@ function MoodReccomendations({ user }) {
         </p>
       )}
 
-      {/* Results Section */}
-
       {enrichedData &&
         enrichedData.map((movie) => (
           <div
             key={movie.omdb_id}
-            className="recommendation-card p-4"
+            className="recommendation-card p-4 mt-4"
             style={{
               background: "rgba(255, 255, 255, 0.05)",
               border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -248,7 +289,6 @@ function MoodReccomendations({ user }) {
           >
             <h4 className="text-white mb-2">{movie.corrected_title}</h4>
             <p className="text-muted small mb-4">{movie.summary}</p>
-            {/* This child component handles its own fetch using the ID provided here */}
             <MovieIDSearch
               IDResult={movie.details}
               amount={"min"}

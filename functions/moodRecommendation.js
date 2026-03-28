@@ -97,6 +97,13 @@ export async function handler(event) {
         body: JSON.stringify({ error: "prompt is required" }),
       };
     }
+    let movieNamesAndID;
+    if (prompt.watchlist) {
+      movieNamesAndID = prompt.movies
+        .map((m) => m.movie_title + "," + m.movie_id)
+        .join(", ");
+      console.log(`fuuuck : ${movieNamesAndID}`);
+    }
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
@@ -108,13 +115,23 @@ export async function handler(event) {
             {
               parts: [
                 {
-                  text: `recommend movies / shows that is  "${prompt.era}" +"${prompt.creator}"+"${prompt.mood}" 3 max.
+                  text: `${
+                    prompt.watchlist
+                      ? `recommend movies / shows only from this list  "${movieNamesAndID}  3 max,Match the user's mood:${prompt.era ? prompt.era : "any era"}" +"${prompt.creator ? prompt.creator : "any creator"}"+"${prompt.mood ? prompt.mood : "any mood"}"..
+Return ONLY valid JSON with:
+[{
+  "summary": "",
+  "corrected_title": "",
+  "omdb_id": ""
+}]  `
+                      : `recommend movies / shows that is  "${prompt.era ? prompt.era : "any era"}" +"${prompt.creator ? prompt.creator : "any creator"}"+"${prompt.mood ? prompt.mood : "any mood"}" 3 max.
 Return ONLY valid JSON with:
 {
   "summary": "",
   "corrected_title": "",
   "omdb_id": ""
-}`,
+}`
+                  } `,
                 },
               ],
             },
@@ -124,7 +141,6 @@ Return ONLY valid JSON with:
     );
 
     const data = await response.json();
-
     let text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!text) {
@@ -135,6 +151,7 @@ Return ONLY valid JSON with:
     text = text.replace(/```json|```/g, "").trim();
 
     const parsed = JSON.parse(text);
+    console.log("AI Raw Response:", text);
 
     return {
       statusCode: 200,
