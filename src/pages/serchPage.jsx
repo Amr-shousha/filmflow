@@ -52,7 +52,8 @@ function Search({ user }) {
   return (
     <div className="container">
       <h1 className="text-center display-5 " ref={textRef}>
-        The Biggest Movies Database
+        The Biggest <span class="word">Movies</span>{" "}
+        <span class="word"> Database</span>
       </h1>
 
       <SearchBar setSearchInput={setSearchInput} searchInput={searchInput} />
