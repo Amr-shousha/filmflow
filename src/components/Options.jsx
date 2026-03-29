@@ -72,10 +72,15 @@ export default function Options() {
       icon: iconReviews,
     },
   ];
-
   const handleClick = (path) => {
-    // setShowCards(false);
-    navigate(path);
+    // Check if the path starts with http (external link)
+    if (path.startsWith("http")) {
+      window.location.href = path;
+      // Or use window.open(path, '_blank') if you want it in a new tab
+    } else {
+      // Internal route
+      navigate(path);
+    }
   };
 
   return (
