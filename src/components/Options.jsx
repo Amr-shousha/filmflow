@@ -41,14 +41,14 @@ export default function Options() {
       path: "/interviews",
       icon: iconinterview,
     },
-    ,
-    {
-      id: "screenplay",
-      title: "Screenplay ",
-      description: "Plan your movie using professional story beats",
-      path: "/screenplay",
-      icon: iconScreenWriting,
-    },
+    // ,
+    // {
+    //   id: "screenplay",
+    //   title: "Screenplay ",
+    //   description: "Plan your movie using professional story beats",
+    //   path: "/screenplay",
+    //   icon: iconScreenWriting,
+    // },
     {
       id: "Scripts",
       title: "Script Library",

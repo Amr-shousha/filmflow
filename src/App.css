@@ -49,10 +49,10 @@ p {
 .container {
   display: flex;
   flex-direction: column;
-  padding: 20px 0;
+  /* padding: 20px 0; */
   align-items: center;
   justify-content: center !important;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 /* 2. LAYOUT CONTAINERS */
@@ -77,7 +77,7 @@ p {
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
-  padding: 20px 0;
+  padding-top: 20px;
   width: 100%;
   justify-content: center;
   align-items: stretch;
@@ -134,7 +134,7 @@ p {
   border: 1px solid var(--color-accent);
   background-color: #1e1b29;
   color: var(--color-text-main);
-  width: 60vw;
+  /* width: 60vw; */
   padding: 12px;
   border-radius: 25px;
   transition: var(--transition);
@@ -285,9 +285,13 @@ p {
 }
 
 /* 7. WIZARD & FORMS */
+.input-container {
+  max-width: 100%;
+}
 
 .input-container input {
-  width: 100%;
+  width: 500px;
+  margin: 20px 0 0 0;
   padding: 15px 60px 15px 25px;
   border-radius: 50px;
   border: 1px solid var(--color-primary);
@@ -295,7 +299,15 @@ p {
   color: white;
   transition: var(--transition);
 }
-
+@media (max-width: 600px) {
+  .input-container input {
+    width: 100%;
+  }
+}
+.word {
+  display: inline-block;
+  white-space: nowrap; /* Forces the characters inside to stay together */
+}
 .btn-accent {
   background-color: var(--color-accent);
   color: var(--color-bg);

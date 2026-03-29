@@ -96,11 +96,11 @@ export default function App() {
                   Script Library
                 </a>
               </li>
-              <li className="nav-item pt-2">
+              {/* <li className="nav-item pt-2">
                 <NavLink className="nav-link" to="/screenplay">
                   Screenplay
                 </NavLink>
-              </li>
+              </li> */}
               <li className="nav-item pt-2">
                 <NavLink className="nav-link" to="/critique">
                   Critique
