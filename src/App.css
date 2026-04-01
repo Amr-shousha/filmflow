@@ -353,7 +353,9 @@ p {
   border-color: transparent;
   box-shadow: 0 4px 15px rgba(167, 139, 250, 0.4);
 } */
-
+.mood-main-container {
+  width: 100%;
+}
 /* 8. MOOD CHIPS & SCROLLING */
 .mood-container {
   display: flex;
@@ -366,7 +368,6 @@ p {
   -webkit-overflow-scrolling: touch; /* Smooth momentum scroll for iOS */
   scrollbar-width: none; /* Hide scrollbar for Firefox */
   -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
-
   mask-image: linear-gradient(
     to right,
     transparent,

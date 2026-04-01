@@ -196,7 +196,7 @@ function MoodReccomendations({ user }) {
 
   return (
     <div className=" container ">
-      <div className=" ">
+      <div className="mood-main-container">
         <h1 className="display-5 mb-4" ref={textRef}>
           Mood Match{" "}
         </h1>
