@@ -5,7 +5,7 @@ export async function handler(event) {
 
     // fetch API and wait for JSON
     const response = await fetch(
-      `http://www.omdbapi.com/?apikey=${APIKey}&i=${searchInput}`
+      `http://www.omdbapi.com/?apikey=${APIKey}&i=${searchInput}`,
     );
     const data = await response.json();
 

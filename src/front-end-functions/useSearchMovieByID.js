@@ -1,4 +1,6 @@
+//Remove
 import { useState, useEffect } from "react";
+import { supabase } from "../lib/supabaseClient";
 
 export function useMovieSearchByID() {
   const [searchIDResult, setSearchIDResult] = useState(null);
@@ -8,14 +10,21 @@ export function useMovieSearchByID() {
     //   setLoading(true);
     //   setError("");
     try {
-      const response = await fetch("/.netlify/functions/movieIDSearch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ searchInput: ID }),
-      });
-      const MovieIDResult = await response.json();
-      setSearchIDResult(MovieIDResult);
+      // 1. The Invoke call
+      const { data, error: functionError } = await supabase.functions.invoke(
+        "movieIDSearch",
+        {
+          body: { searchInput: ID },
+        },
+      );
+      if (functionError) {
+        throw new Error(functionError.message || "Failed to fetch movie data");
+      }
+
+      // 3. Success!
+      setSearchIDResult(data);
     } catch (err) {
+      console.error("Frontend Error:", err.message);
       // setError(err.message || "Something went wrong");
     } finally {
       // setLoading(false);
