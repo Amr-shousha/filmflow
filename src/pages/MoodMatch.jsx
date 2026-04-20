@@ -56,43 +56,42 @@ function MoodReccomendations({ user }) {
     ],
   };
 
-  async function handleSubmit() {
+  async function handleSubmit(isWatchlist = false) {
     setEnrichedData("");
     setLoading(true);
     setError("");
     setResult(null);
+
     const payload = {
-      watchlist: false,
-      mood: mood,
-      era: era,
-      creator: creator,
+      watchlist: isWatchlist,
+      movies: moviesFromSupabase || [],
+      mood,
+      era,
+      creator,
     };
+
     try {
-      const response = await fetch("/.netlify/functions/moodRecommendation", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: payload }),
-      });
+      // Only one call to Supabase
+      const { data, error: invokeError } = await supabase.functions.invoke(
+        "moodRecomendation", // Matches your folder with one 'm'
+        { body: payload },
+      );
 
-      if (!response.ok) throw new Error(`AI Error: ${response.status}`);
+      if (invokeError) throw new Error(invokeError.message);
+      if (!data || !Array.isArray(data))
+        throw new Error("AI returned invalid format");
 
-      const data = await response.json();
       setResult(data);
 
+      // Enriched data fetch
       const movieSearchPromises = data.map(async (movie) => {
         try {
-          const res = await fetch("/.netlify/functions/movieIDSearch", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ searchInput: movie.omdb_id }),
-          });
-          const movieDetails = await res.json();
-          return { ...movie, details: movieDetails };
-        } catch (innerErr) {
-          console.error(
-            `Failed to fetch details for ${movie.omdb_id}`,
-            innerErr,
+          const { data: movieDetails } = await supabase.functions.invoke(
+            "movieIDSearch",
+            { body: { searchInput: movie.omdb_id } },
           );
+          return { ...movie, details: movieDetails };
+        } catch (e) {
           return movie;
         }
       });
@@ -101,14 +100,15 @@ function MoodReccomendations({ user }) {
       setEnrichedData(finalResults);
     } catch (err) {
       console.error("Critical Error:", err);
-      setError("Failed to fetch recommendations. Please try again.");
+      // This will now show the REAL error from the backend (like "Empty Gemini response")
+      setError(err.message || "Failed to fetch recommendations.");
     } finally {
       setLoading(false);
-      setMood("");
-      setEra("");
-      setCreator("");
     }
   }
+  // Update your buttons:
+  // <button onClick={() => handleSubmit(false)}>Recommend randomly</button>
+  // <button onClick={() => handleSubmit(true)}>Recommend from Watchlist</button>
   let moviesData;
   async function fetchMyWatchlist() {
     if (user) {
@@ -131,68 +131,68 @@ function MoodReccomendations({ user }) {
     if (user) fetchMyWatchlist();
   }, [user]);
 
-  async function handleSubmit2() {
-    if (!moviesFromSupabase || moviesFromSupabase.length === 0) {
-      return alert("Your watchlist is empty! Add some movies first.");
-    }
-    setEnrichedData("");
-    setLoading(true);
-    setError("");
-    setResult(null);
-    const currentPayload = {
-      watchlist: true,
-      movies: moviesFromSupabase,
-      mood: mood,
-      era: era,
-      creator: creator,
-    };
+  // async function handleSubmit2() {
+  //   if (!moviesFromSupabase || moviesFromSupabase.length === 0) {
+  //     return alert("Your watchlist is empty! Add some movies first.");
+  //   }
+  //   setEnrichedData("");
+  //   setLoading(true);
+  //   setError("");
+  //   setResult(null);
+  //   const currentPayload = {
+  //     watchlist: true,
+  //     movies: moviesFromSupabase,
+  //     mood: mood,
+  //     era: era,
+  //     creator: creator,
+  //   };
 
-    // 3. Update state so the UI knows, but use the local variable for the fetch
-    setWatchlistData(currentPayload);
+  //   // 3. Update state so the UI knows, but use the local variable for the fetch
+  //   setWatchlistData(currentPayload);
 
-    try {
-      const response = await fetch("/.netlify/functions/moodRecommendation", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: currentPayload }),
-      });
+  //   try {
+  //     const response = await fetch("/.netlify/functions/moodRecommendation", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ prompt: currentPayload }),
+  //     });
 
-      if (!response.ok) throw new Error(`AI Error: ${response.status}`);
+  //     if (!response.ok) throw new Error(`AI Error: ${response.status}`);
 
-      const moodData = await response.json();
-      console.log(" row from mood function" + response);
-      setResult(moodData);
+  //     const moodData = await response.json();
+  //     console.log(" row from mood function" + response);
+  //     setResult(moodData);
 
-      const movieSearchPromises = moodData.map(async (movie) => {
-        try {
-          const res = await fetch("/.netlify/functions/movieIDSearch", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ searchInput: movie.omdb_id }),
-          });
-          const movieDetails = await res.json();
-          return { ...movie, details: movieDetails };
-        } catch (innerErr) {
-          console.error(
-            `Failed to fetch details for ${movie.omdb_id}`,
-            innerErr,
-          );
-          return movie;
-        }
-      });
+  //     const movieSearchPromises = moodData.map(async (movie) => {
+  //       try {
+  //         const res = await fetch("/.netlify/functions/movieIDSearch", {
+  //           method: "POST",
+  //           headers: { "Content-Type": "application/json" },
+  //           body: JSON.stringify({ searchInput: movie.omdb_id }),
+  //         });
+  //         const movieDetails = await res.json();
+  //         return { ...movie, details: movieDetails };
+  //       } catch (innerErr) {
+  //         console.error(
+  //           `Failed to fetch details for ${movie.omdb_id}`,
+  //           innerErr,
+  //         );
+  //         return movie;
+  //       }
+  //     });
 
-      const finalResults = await Promise.all(movieSearchPromises);
-      setEnrichedData(finalResults);
-    } catch (err) {
-      console.error("Critical Error:", err);
-      setError("Failed to fetch recommendations. Please try again.");
-    } finally {
-      setLoading(false);
-      setMood("");
-      setEra("");
-      setCreator("");
-    }
-  }
+  //     const finalResults = await Promise.all(movieSearchPromises);
+  //     setEnrichedData(finalResults);
+  //   } catch (err) {
+  //     console.error("Critical Error:", err);
+  //     setError("Failed to fetch recommendations. Please try again.");
+  //   } finally {
+  //     setLoading(false);
+  //     setMood("");
+  //     setEra("");
+  //     setCreator("");
+  //   }
+  // }
 
   return (
     <div className=" container ">
@@ -252,7 +252,7 @@ function MoodReccomendations({ user }) {
       </div>
       <div className="w-100 row gx-4 gap-2 justify-content-center">
         <button
-          onClick={() => handleSubmit()}
+          onClick={() => handleSubmit(false)}
           className="btn btn-primary mood-chip  col-md-4 px-4 py-2"
           disabled={loading}
         >
@@ -261,7 +261,7 @@ function MoodReccomendations({ user }) {
 
         {user && (
           <button
-            onClick={() => handleSubmit2()}
+            onClick={() => handleSubmit(true)}
             className="btn btn-primary mood-chip col-md-4 px-4 py-2"
             disabled={loading}
           >
