@@ -22,19 +22,19 @@ serve(async (req: any) => {
     }
 
     const promptText = watchlist && movieContext
-      ? `Recommend 3 movies ONLY from this list: [${movieContext}]. Match mood: ${mood}, era: ${era}. Return ONLY a raw JSON array: [{"summary":"why", "corrected_title":"title", "omdb_id":"imdb_id"}]`
-      : `Recommend 3 movies: ${mood} mood, ${era} era, ${creator} style. Return ONLY a raw JSON array: [{"summary":"why", "corrected_title":"title", "omdb_id":"imdb_id"}]`;
+      ? `Recommend 3 movies ONLY from this list: [${movieContext}]. Match mood: ${mood}, era: ${era}. Return ONLY a JSON array: [{"summary":"why", "corrected_title":"title", "omdb_id":"imdb_id"}]`
+      : `Recommend 3 movies: ${mood} mood, ${era} era, ${creator} style. Return ONLY a JSON array: [{"summary":"why", "corrected_title":"title", "omdb_id":"imdb_id"}]`;
 
     const apiKey = Deno.env.get('GEMINI_API_KEY');
     
+    // Using v1 (Stable) and the full model path
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: promptText }] }],
-          // Removed the problematic response_mime_type to ensure compatibility
+          contents: [{ parts: [{ text: promptText }] }]
         })
       }
     );
@@ -47,7 +47,7 @@ serve(async (req: any) => {
     const result = await response.json();
     let aiText = result?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
-    // Clean any markdown backticks if Gemini includes them
+    // Robust JSON cleaning
     const cleanJson = aiText.replace(/```json|```/g, "").trim();
     const parsedData = JSON.parse(cleanJson);
 
@@ -57,6 +57,7 @@ serve(async (req: any) => {
     });
 
   } catch (err: any) {
+    console.error("Function Error:", err.message);
     return new Response(JSON.stringify({ error: err.message }), { 
       status: 500, 
       headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
