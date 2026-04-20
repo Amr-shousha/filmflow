@@ -8,16 +8,12 @@ const corsHeaders = {
 }
 
 serve(async (req: any) => {
-  // 1. Handle CORS Preflight
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 
   try {
     const payload = await req.json().catch(() => ({}));
     const { watchlist, movies, mood, era, creator } = payload;
 
-    console.log(`Processing request: Mood=${mood}, Era=${era}, Watchlist=${watchlist}`);
-
-    // 2. Prepare the prompt
     let movieContext = "";
     if (watchlist && Array.isArray(movies) && movies.length > 0) {
       movieContext = movies
@@ -26,42 +22,41 @@ serve(async (req: any) => {
     }
 
     const promptText = watchlist && movieContext
-      ? `Recommend 3 movies ONLY from this list: [${movieContext}]. The user is in a "${mood}" mood and wants "${era}" cinema. Return ONLY a JSON array: [{"summary":"brief why", "corrected_title":"exact title", "omdb_id":"imdb_id"}]`
-      : `Recommend 3 movies for a "${mood}" mood, "${era}" era, by "${creator}" style creators. Return ONLY a JSON array: [{"summary":"brief why", "corrected_title":"exact title", "omdb_id":"imdb_id"}]`;
+      ? `Recommend 3 movies ONLY from this list: [${movieContext}]. Match mood: ${mood}, era: ${era}. Return ONLY a raw JSON array: [{"summary":"why", "corrected_title":"title", "omdb_id":"imdb_id"}]`
+      : `Recommend 3 movies: ${mood} mood, ${era} era, ${creator} style. Return ONLY a raw JSON array: [{"summary":"why", "corrected_title":"title", "omdb_id":"imdb_id"}]`;
 
-    // 3. Call Gemini 1.5 Flash (Stable)
     const apiKey = Deno.env.get('GEMINI_API_KEY');
+    
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [{ parts: [{ text: promptText }] }],
-          generationConfig: { response_mime_type: "application/json" } // Forces JSON output
+          // Removed the problematic response_mime_type to ensure compatibility
         })
       }
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Gemini API Error: ${response.status} - ${errorText}`);
+      const errorData = await response.json();
+      throw new Error(`Gemini API Error: ${response.status} - ${JSON.stringify(errorData)}`);
     }
 
     const result = await response.json();
-    const aiText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+    let aiText = result?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
-    if (!aiText) throw new Error("Gemini returned an empty response (Safety Filter?)");
+    // Clean any markdown backticks if Gemini includes them
+    const cleanJson = aiText.replace(/```json|```/g, "").trim();
+    const parsedData = JSON.parse(cleanJson);
 
-    // 4. Parse and Return
-    const parsedData = JSON.parse(aiText);
     return new Response(JSON.stringify(parsedData), { 
       status: 200, 
       headers: { ...corsHeaders, "Content-Type": "application/json" } 
     });
 
   } catch (err: any) {
-    console.error("Function Crash:", err.message);
     return new Response(JSON.stringify({ error: err.message }), { 
       status: 500, 
       headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
